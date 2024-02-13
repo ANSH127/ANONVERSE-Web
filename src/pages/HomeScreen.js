@@ -14,7 +14,7 @@ export default function HomeScreen() {
 
 
       </div>
-      <div className='gap-4 col-span-2 h-full'>
+      <div className='gap-4 col-span-2 h-full shadow-lg'>
         {/* // main content */}
         <div className=' overflow-y-auto overflow-x-hidden'
           style={{
