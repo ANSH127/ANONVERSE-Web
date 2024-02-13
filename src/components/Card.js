@@ -8,7 +8,7 @@ export default function Card() {
   const [message, setMessage] = React.useState(false)
   return (
 
-    <div className='shadow-lg p-4 bg-white rounded-lg mb-10'>
+    <div className='shadow-lg p-4 bg-white rounded-lg mb-10 mr-5'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
           <img
@@ -46,15 +46,15 @@ export default function Card() {
         <div className='flex items-center space-x-2'>
           {
             liked ?
-              <HeartIcon2 className='h-8 w-8 text-red-500'
+              <HeartIcon2 className='h-8 w-8 text-red-500 cursor-pointer'
                 onClick={() => setLiked(!liked)} />
               :
-              <HeartIcon className='h-8 w-8 text-red-500'
+              <HeartIcon className='h-8 w-8 text-red-500 cursor-pointer'
                 onClick={() => setLiked(!liked)}
               />}
               {/* // like count */}
           <p className='text-gray-500'>5 likes</p>
-          <ChatBubbleBottomCenterIcon className='h-8 w-8'
+          <ChatBubbleBottomCenterIcon className='h-8 w-8 cursor-pointer'
             onClick={() => setMessage(!message)}
           />
           {/* // comment count */}

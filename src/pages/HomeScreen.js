@@ -18,7 +18,7 @@ export default function HomeScreen() {
         {/* // main content */}
         <div className=' overflow-y-auto overflow-x-hidden'
           style={{
-            scrollbarWidth: 'none', height: '100vh', paddingBottom: '100px',
+            scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
           }}>
           <Card />
           <Card />

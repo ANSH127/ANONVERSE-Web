@@ -11,6 +11,8 @@ export default function AddConfessionScreen() {
         <NavCard />
       </div>
       <div className='gap-4 col-span-2 h-full shadow-lg'>
+
+
         <AddConfessionForm />
       </div>
       <div className='hidden md:block'>

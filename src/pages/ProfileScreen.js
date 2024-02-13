@@ -18,10 +18,7 @@ export default function ProfileScreen() {
       </div>
       <div className='gap-4 col-span-2 h-full shadow-lg'>
         {/* // main content */}
-        {!changeAvatar && <div className=' overflow-y-auto overflow-x-hidden'
-          style={{
-            scrollbarWidth: 'none', height: '100vh', paddingBottom: '100px',
-          }}>
+        {!changeAvatar && <div className=' '>
 
           {/* // user profile */}
           <div className='items-center justify-center flex flex-col py-4'>
@@ -63,7 +60,7 @@ export default function ProfileScreen() {
         {changeAvatar &&
           <div className=' overflow-y-auto overflow-x-hidden'
             style={{
-              scrollbarWidth: 'none', height: '100vh', paddingBottom: '150px',
+              scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
             }}>
             {/* // display all avtar images here */}
             <div className='flex flex-wrap gap-4 justify-around items-center'>
