@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Header() {
     const navigate = useNavigate();
     return (
-        <div className='flex justify-between items-center p-3 bg-white shadow-sm text-2xl font-bold fixed'>
+        <div className='flex justify-between items-center p-3 bg-white shadow-sm text-2xl font-bold'>
             <h1>AnonVerse</h1>
             <div>
                 <button className='hidden md:block p-2 rounded-full bg-gray-200'
