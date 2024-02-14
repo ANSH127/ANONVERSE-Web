@@ -2,6 +2,8 @@ import React from 'react'
 import Card from '../components/Card';
 import NavCard from '../components/NavCard';
 import ProfileCard from '../components/ProfileCard';
+import SearchSection from '../components/SearchSection';
+import TrendingCards from '../components/TrendingCards';
 
 
 export default function YourConfessionScreen() {
@@ -27,8 +29,11 @@ export default function YourConfessionScreen() {
           <Card />
         </div>
       </div>
-      <div className='hidden md:block'>
-        <h1>Section 3</h1>
+      
+      <div className='mr-2 hidden md:block'>
+
+        <SearchSection />
+        <TrendingCards />
       </div>
     </div>
   )

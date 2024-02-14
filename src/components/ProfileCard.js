@@ -5,7 +5,7 @@ export default function ProfileCard() {
         <div className='shadow-lg p-4 bg-white rounded-lg'>
             <div className='flex justify-center'>
                 <img
-                    src='./images/Avatar.jpg'
+                    src='./images/sad-face.png'
                     alt='profile'
                     className='rounded-full'
                     width='100'
@@ -13,10 +13,14 @@ export default function ProfileCard() {
 
                 />
 
+
             </div>
             <div className='text-center'>
-                <h1 className='text-xl font-bold'>John Doe</h1>
-                <p className='text-gray-500'>Software Developer</p>
+                <h1 className='text-xl font-bold'>
+                You Haven't Logged In
+
+                </h1>
+                {/* <p className='text-gray-500'>Software Developer</p> */}
                 {/* // login button */}
                 <div className='flex justify-center mt-4'>
                     <button className='bg-blue-500 text-white px-4 py-2 rounded-md'>

@@ -2,6 +2,8 @@ import React from 'react'
 import NavCard from '../components/NavCard';
 import ProfileCard from '../components/ProfileCard';
 import AddConfessionForm from '../components/AddConfessionForm';
+import SearchSection from '../components/SearchSection';
+import TrendingCards from '../components/TrendingCards';
 export default function AddConfessionScreen() {
   return (
 
@@ -15,8 +17,10 @@ export default function AddConfessionScreen() {
 
         <AddConfessionForm />
       </div>
-      <div className='hidden md:block'>
-        <h1>Section 3</h1>
+      <div className='mr-2 hidden md:block'>
+
+        <SearchSection />
+        <TrendingCards />
       </div>
     </div>
   )

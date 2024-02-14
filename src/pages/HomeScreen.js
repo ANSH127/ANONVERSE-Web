@@ -2,6 +2,8 @@ import React from 'react';
 import Card from '../components/Card';
 import NavCard from '../components/NavCard';
 import ProfileCard from '../components/ProfileCard';
+import TrendingCards from '../components/TrendingCards';
+import SearchSection from '../components/SearchSection';
 
 export default function HomeScreen() {
   return (
@@ -25,8 +27,10 @@ export default function HomeScreen() {
           <Card />
         </div>
       </div>
-      <div className='hidden md:block'>
-        <h1>Section 3</h1>
+      <div className='mr-2 hidden md:block'>
+
+        <SearchSection />
+        <TrendingCards />
       </div>
     </div>
   );

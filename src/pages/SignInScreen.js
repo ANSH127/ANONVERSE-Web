@@ -44,7 +44,6 @@ export default function SignInScreen() {
 
       </div>
       <div className='hidden md:block'>
-        <h1>Section 3</h1>
       </div>
     </div>
   )
