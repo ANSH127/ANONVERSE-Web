@@ -1,6 +1,7 @@
 import React from 'react'
 import NavCard from '../components/NavCard';
 import ProfileCard from '../components/ProfileCard';
+import { Link } from 'react-router-dom';
 
 
 export default function SignUpScreen() {
@@ -27,6 +28,10 @@ export default function SignUpScreen() {
                         <input type="text" placeholder="Full Name" className="w-full p-4 border-2 border-gray-300 rounded-lg" />
                         <input type="text" placeholder="Email" className="w-full p-4 border-2 border-gray-300 rounded-lg" />
                         <input type="password" placeholder="Password" className="w-full p-4 border-2 border-gray-300 rounded-lg" />
+
+                        <p className="text-center">Already have an account?
+                            <Link to='/signin' className="text-blue-500"> Sign In</Link>
+                        </p>
 
                         <button className="p-2 bg-blue-500 text-white rounded-lg">Sign Up</button>
 
