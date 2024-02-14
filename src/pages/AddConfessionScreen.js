@@ -10,7 +10,7 @@ export default function AddConfessionScreen() {
         <ProfileCard />
         <NavCard />
       </div>
-      <div className='gap-4 col-span-2 h-full shadow-lg'>
+      <div className='gap-4 col-span-2 h-full shadow-lg mr-5'>
 
 
         <AddConfessionForm />

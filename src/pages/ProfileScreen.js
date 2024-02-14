@@ -16,7 +16,7 @@ export default function ProfileScreen() {
 
 
       </div>
-      <div className='gap-4 col-span-2 h-full shadow-lg'>
+      <div className='gap-4 col-span-2 h-full shadow-lg mr-5'>
         {/* // main content */}
         {!changeAvatar && <div className=' '>
 
