@@ -60,7 +60,7 @@ export default function ProfileScreen() {
         {changeAvatar &&
           <div className=' overflow-y-auto overflow-x-hidden'
             style={{
-              scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
+              scrollbarWidth: 'none', height: '100vh', paddingBottom: '250px',
             }}>
             {/* // display all avtar images here */}
             <div className='flex flex-wrap gap-4 justify-around items-center'>
