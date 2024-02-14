@@ -1,6 +1,8 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function ProfileCard() {
+    const navigate = useNavigate()
     return (
         <div className='shadow-lg p-4 bg-white rounded-lg'>
             <div className='flex justify-center'>
@@ -23,7 +25,9 @@ export default function ProfileCard() {
                 {/* <p className='text-gray-500'>Software Developer</p> */}
                 {/* // login button */}
                 <div className='flex justify-center mt-4'>
-                    <button className='bg-blue-500 text-white px-4 py-2 rounded-md'>
+                    <button className='bg-blue-500 text-white px-4 py-2 rounded-md'
+                        onClick={() => navigate('/login')}
+                    >
                         Login
                     </button>
                 </div>

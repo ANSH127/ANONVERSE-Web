@@ -21,7 +21,7 @@ function App() {
           <Route path="/add" element={<AddConfessionScreen/>}/>
           <Route path="/your" element={<YourConfessionScreen/>}/>
           <Route path="/profile" element={<ProfileScreen/>}/>
-          <Route path="/signin" element={<SignInScreen/>}/>
+          <Route path="/login" element={<SignInScreen/>}/>
           <Route path="/signup" element={<SignUpScreen/>}/>
         </Routes>
       </Router>

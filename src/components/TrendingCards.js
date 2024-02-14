@@ -11,7 +11,10 @@ export default function TrendingCards() {
 
             <div className='mt-2 overflow-y-auto h-96 overflow-x-hidden'
                 style={{
-                    scrollbarWidth: 'none', paddingBottom: '150px',
+                    paddingBottom: '120px',
+                    scrollbarColor: 'rgba(0, 0, 0, 0.1) transparent',
+                    scrollbarWidth: 'thin',
+                    scrollBehavior: 'smooth',
                 }}>
 
                 <div className='shadow-lg  bg-white rounded-lg mb-5'>
