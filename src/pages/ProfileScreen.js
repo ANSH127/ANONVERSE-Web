@@ -7,6 +7,11 @@ import TrendingCards from '../components/TrendingCards'
 export default function ProfileScreen() {
   const [changeAvatar, setChangeAvatar] = React.useState(false)
   const [avatar, setAvatar] = React.useState('')
+
+  
+
+
+
   return (
 
     <div className='grid-cols-1 grid md:grid-cols-4 gap-8  h-full p-4 m-2 fixed w-full' style={{ height: '100%' }}>
