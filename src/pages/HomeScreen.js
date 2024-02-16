@@ -23,7 +23,7 @@ export default function HomeScreen() {
       const docSnap = await getDocs(q);
       let data = []
       docSnap.forEach((doc) => {
-        data.push(doc.data())
+        data.push({ ...doc.data(), id: doc.id })
       });
       setConfessions(data)
       console.log(data)
