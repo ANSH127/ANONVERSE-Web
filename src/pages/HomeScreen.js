@@ -1,11 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Card from '../components/Card';
 import NavCard from '../components/NavCard';
 import ProfileCard from '../components/ProfileCard';
 import TrendingCards from '../components/TrendingCards';
 import SearchSection from '../components/SearchSection';
-
+import {confessionRef } from '../config/firebase';
+import { getDocs, query, orderBy } from 'firebase/firestore'
 export default function HomeScreen() {
+  const [confessions, setConfessions] = React.useState([])
+
+
+  const fetchConfessions = async () => {
+    try {
+
+      const q = query(confessionRef, orderBy('createdAt', 'desc'));
+      const docSnap = await getDocs(q);
+      let data = []
+      docSnap.forEach((doc) => {
+        data.push(doc.data())
+      });
+      setConfessions(data)
+      console.log(data)
+
+    } catch (error) {
+      console.error("Error getting documents: ", error);
+
+
+    }
+  }
+
+
+  useEffect(() => {
+    fetchConfessions();
+
+  }, [])
+
+
   return (
     <div className='grid-cols-1 grid md:grid-cols-4 gap-8  h-full p-4 m-2 fixed w-full' style={{ height: '100%' }}>
       <div className='hidden md:block gap-4 col-span-1'>
@@ -22,9 +52,14 @@ export default function HomeScreen() {
           style={{
             scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
           }}>
-          <Card />
-          <Card />
-          <Card />
+            {
+              confessions.map((data, index) => {
+                return (
+                  <Card key={index} data={data} />
+                )
+              })
+            
+            }
         </div>
       </div>
       <div className='mr-2 hidden md:block'>
