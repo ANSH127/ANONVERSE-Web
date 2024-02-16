@@ -3,16 +3,17 @@ import { HeartIcon, FlagIcon, ChatBubbleBottomCenterIcon } from '@heroicons/reac
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { formatDistance } from 'date-fns'
 
-import { confessionRef, auth } from '../config/firebase'
-import { updateDoc, doc, deleteDoc } from 'firebase/firestore'
+import { confessionRef } from '../config/firebase'
+import { updateDoc, doc } from 'firebase/firestore'
 
 
 import { HeartIcon as HeartIcon2 } from '@heroicons/react/24/solid'
 export default function Card({ data }) {
   const [liked, setLiked] = React.useState(data?.likedby.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ? true : false)
   const [message, setMessage] = React.useState(false)
+  const [mesageData, setMessageData] = React.useState('')
   const [loading, setLoading] = React.useState(false)
-
+  const [loading2, setLoading2] = React.useState(false)
   const handleLike = async () => {
     try {
       setLoading(true);
@@ -46,6 +47,38 @@ export default function Card({ data }) {
     finally {
       setLiked(!liked);
       setLoading(false);
+    }
+  }
+
+  const handleComment = async () => {
+    if (mesageData.length < 3) {
+      alert('Comment should be atleast 3 characters long')
+      return;
+    }
+    else {
+      setLoading2(true);
+
+      let docid = data.id;
+      let uid = JSON.parse(localStorage.getItem('user')).uid;
+      try {
+
+        let newComment = {
+          comment: mesageData,
+          uid: uid,
+          createdAt: new Date().toISOString()
+        }
+        await updateDoc(doc(confessionRef, docid), {
+          comments: [...data.comments, newComment]
+        })
+        setMessage('')
+        data.comments.push(newComment);
+
+      } catch (error) {
+        alert(error.message)
+      }
+      finally {
+        setLoading2(false);
+      }
     }
   }
 
@@ -124,9 +157,18 @@ export default function Card({ data }) {
             <textarea
               className='w-full border border-gray-300 rounded-lg p-2'
               placeholder='Type your comment here'
+              value={mesageData}
+              onChange={(e) => setMessageData(e.target.value)}
             ></textarea>
 
-            <PaperAirplaneIcon className='h-8 w-8 text-blue-500' />
+            {
+              loading2 ?
+                <img src='./images/loadar.gif' alt='loading' width='30' height='30' />
+                :
+                <PaperAirplaneIcon className='h-8 w-8 text-blue-500'
+                  onClick={handleComment}
+                />
+            }
           </div>
           {/* // user comment box with profile image and name and comment in bg-grey */}
           {
