@@ -6,12 +6,18 @@ import TrendingCards from '../components/TrendingCards';
 import SearchSection from '../components/SearchSection';
 import {confessionRef } from '../config/firebase';
 import { getDocs, query, orderBy } from 'firebase/firestore'
+import { useNavigate } from 'react-router-dom';
+
 export default function HomeScreen() {
+  const navigate = useNavigate()
   const [confessions, setConfessions] = React.useState([])
 
 
   const fetchConfessions = async () => {
     try {
+      if(localStorage.getItem('user')===null){
+        navigate('/login')
+      }
 
       const q = query(confessionRef, orderBy('createdAt', 'desc'));
       const docSnap = await getDocs(q);
