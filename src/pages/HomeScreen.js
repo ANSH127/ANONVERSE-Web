@@ -39,6 +39,7 @@ export default function HomeScreen() {
   useEffect(() => {
     fetchConfessions();
 
+    // eslint-disable-next-line
   }, [])
 
 
