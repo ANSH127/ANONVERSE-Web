@@ -3,8 +3,11 @@ import NavCard from '../components/NavCard'
 import ProfileCard from '../components/ProfileCard'
 import SearchSection from '../components/SearchSection'
 import TrendingCards from '../components/TrendingCards'
+import { useSelector } from 'react-redux'
+
 
 export default function ProfileScreen() {
+  const myavtar=useSelector(state=>state.user.avtar);
   const [changeAvatar, setChangeAvatar] = React.useState(false)
   const [avatar, setAvatar] = React.useState('')
 
@@ -30,7 +33,13 @@ export default function ProfileScreen() {
           {/* // user profile */}
           <div className='items-center justify-center flex flex-col py-4'>
             <img
-              src='./images/Avatar.jpg'
+              src={
+                myavtar === '' ?
+                  './images/sad-face.png'
+                  :
+                  `./images/Avatar/Avatar${myavtar+1}.jpg`
+
+              }
               alt='profile'
               className='rounded-full hover:border-2 border-blue-500'
 

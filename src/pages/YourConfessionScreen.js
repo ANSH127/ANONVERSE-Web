@@ -4,13 +4,16 @@ import NavCard from '../components/NavCard';
 import ProfileCard from '../components/ProfileCard';
 import SearchSection from '../components/SearchSection';
 import TrendingCards from '../components/TrendingCards';
-import {confessionRef } from '../config/firebase';
-import { getDocs, where,query, orderBy } from 'firebase/firestore'
+import { confessionRef } from '../config/firebase';
+import { getDocs, where, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 
 export default function YourConfessionScreen() {
+  const avatarlist = useSelector(state => state.user.AvtarList)
+
   const [confessions, setConfessions] = React.useState([])
   const navigate = useNavigate()
 
@@ -21,7 +24,7 @@ export default function YourConfessionScreen() {
       if (localStorage.getItem('user') === null) {
         navigate('/login')
       }
-      let uid=JSON.parse(localStorage.getItem('user')).uid
+      let uid = JSON.parse(localStorage.getItem('user')).uid
       const q = query(confessionRef, where('uid', '==', uid), orderBy('createdAt', 'desc'))
 
       const docSnap = await getDocs(q);
@@ -63,14 +66,17 @@ export default function YourConfessionScreen() {
           style={{
             scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
           }}>
-            {
-              confessions.map((data, index) => {
-                return (
-                  <Card key={index} data={data} />
-                )
-              })
-            
-            }
+          {
+            confessions.map((data, index) => {
+              return (
+                <Card key={index} data={data}
+                  avatarName={avatarlist.filter((item) => item.uid === data.uid)[0].avatar}
+
+                />
+              )
+            })
+
+          }
         </div>
       </div>
 

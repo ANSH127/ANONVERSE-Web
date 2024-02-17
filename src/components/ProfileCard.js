@@ -1,7 +1,9 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 export default function ProfileCard() {
+    const avatar = useSelector(state => state.user.avtar);
     const [user, setUser] = React.useState(null)
     const navigate = useNavigate()
 
@@ -14,7 +16,7 @@ export default function ProfileCard() {
         }
     }
 
-    const handleLogout=()=>{
+    const handleLogout = () => {
         localStorage.removeItem('user')
         navigate('/login')
     }
@@ -31,11 +33,11 @@ export default function ProfileCard() {
                     src=
                     {
                         user !== null ?
-                            './images/Avatar/Avatar1.jpg'
+                            `./images/Avatar/Avatar${avatar + 1}.jpg`
                             :
                             './images/sad-face.png'
                     }
-
+                    
                     alt='profile'
                     className='rounded-full'
                     width='100'
@@ -63,7 +65,7 @@ export default function ProfileCard() {
                             <button className='bg-blue-500 text-white px-4 py-2 rounded-md'
                                 onClick={handleLogout}
                             >
-                                Logout 
+                                Logout
                             </button>
                             :
                             <button className='bg-blue-500 text-white px-4 py-2 rounded-md'
@@ -72,7 +74,7 @@ export default function ProfileCard() {
                                 Login
                             </button>
                     }
-                        
+
                 </div>
             </div>
 

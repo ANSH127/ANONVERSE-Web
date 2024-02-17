@@ -3,7 +3,23 @@ import { confessionRef } from '../config/firebase';
 import { getDocs, query, orderBy, limit } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { formatDistance } from 'date-fns'
+import { useSelector } from 'react-redux';
+
+
+
+const imageList = [
+
+    './images/Avatar/Avatar1.jpg',
+    './images/Avatar/Avatar2.jpg',
+    './images/Avatar/Avatar3.jpg',
+    './images/Avatar/Avatar4.jpg',
+    './images/Avatar/Avatar5.jpg',
+    './images/Avatar/Avatar6.jpg',
+
+]
+
 export default function TrendingCards() {
+    const avatarlist = useSelector(state => state.user.AvtarList);
     const navigate = useNavigate()
     const [confessions, setConfessions] = React.useState([])
 
@@ -60,7 +76,9 @@ export default function TrendingCards() {
                             <div className='flex items-center justify-between'>
                                 <div className='flex items-center space-x-2'>
                                     <img
-                                        src='./images/Avatar.jpg'
+                                        src={
+                                            imageList[avatarlist.find((item) => item.uid === confession.uid)?.avatar]
+                                        }
                                         alt='profile'
                                         className='rounded-full'
                                         width='40'

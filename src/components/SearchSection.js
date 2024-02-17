@@ -2,8 +2,24 @@ import React from 'react'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 import { usersRef } from '../config/firebase'
-import { getDocs} from 'firebase/firestore'
+import { getDocs } from 'firebase/firestore'
+import { useSelector } from 'react-redux';
+
+
+
+const imageList = [
+
+    './images/Avatar/Avatar1.jpg',
+    './images/Avatar/Avatar2.jpg',
+    './images/Avatar/Avatar3.jpg',
+    './images/Avatar/Avatar4.jpg',
+    './images/Avatar/Avatar5.jpg',
+    './images/Avatar/Avatar6.jpg',
+
+]
+
 export default function SearchSection() {
+    const avatarlist = useSelector(state => state.user.AvtarList)
     const [userlist, setUserList] = React.useState([])
     const [searchlist, setSearchList] = React.useState([])
 
@@ -34,7 +50,7 @@ export default function SearchSection() {
     }, [])
 
     const searchUser = (search) => {
-        if(search.length <3) {
+        if (search.length < 3) {
             setSearchList([])
             return
         }
@@ -79,7 +95,9 @@ export default function SearchSection() {
                                 <div key={index} className='flex items-center justify-between bg-gray-100 p-2 mb-1 rounded-lg'>
                                     <div className='flex items-center gap-2'>
                                         <img
-                                            src='./images/Avatar/Avatar1.jpg'
+                                            src={
+                                                imageList[avatarlist.filter((item) => item.uid === user.uid)[0].avatar] 
+                                            }
                                             alt='avatar'
                                             className='h-8 w-8 rounded-full'
                                         />

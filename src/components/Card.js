@@ -8,7 +8,11 @@ import { updateDoc, doc } from 'firebase/firestore'
 
 
 import { HeartIcon as HeartIcon2 } from '@heroicons/react/24/solid'
-export default function Card({ data }) {
+
+
+
+
+export default function Card({ data,avatarName }) {
   const [liked, setLiked] = React.useState(data?.likedby.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ? true : false)
   const [message, setMessage] = React.useState(false)
   const [mesageData, setMessageData] = React.useState('')
@@ -88,7 +92,12 @@ export default function Card({ data }) {
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
           <img
-            src='./images/Avatar.jpg'
+            src={
+              avatarName !== null ?
+                `./images/Avatar/Avatar${avatarName+1}.jpg`
+                :
+                './images/sad-face.png'
+            }
             alt='profile'
             className='rounded-full'
             width='50'

@@ -4,18 +4,23 @@ import NavCard from '../components/NavCard';
 import ProfileCard from '../components/ProfileCard';
 import TrendingCards from '../components/TrendingCards';
 import SearchSection from '../components/SearchSection';
-import {confessionRef } from '../config/firebase';
+import { confessionRef, usersRef } from '../config/firebase';
 import { getDocs, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { setAvtarList, setAvtar } from '../redux/slices/user';
 
 export default function HomeScreen() {
+  const dispatch = useDispatch()
+  const avatarlist = useSelector(state => state.user.AvtarList)
+
   const navigate = useNavigate()
   const [confessions, setConfessions] = React.useState([])
 
 
   const fetchConfessions = async () => {
     try {
-      if(localStorage.getItem('user')===null){
+      if (localStorage.getItem('user') === null) {
         navigate('/login')
       }
 
@@ -34,8 +39,27 @@ export default function HomeScreen() {
     }
   }
 
+  const fetchAllUsersAvatar = async () => {
+    try {
+      let uid = JSON.parse(localStorage.getItem('user')).uid
+      let data = []
+      let querySnapshot = await getDocs(usersRef);
+      querySnapshot.forEach((doc) => {
+        data.push({ avatar: doc.data().avatar, uid: doc.data().uid, id: doc.id })
+
+      });
+      dispatch(setAvtarList(data))
+      let avtar = data.filter((item) => item.uid === uid)
+      dispatch(setAvtar(avtar[0].avatar))
+
+    } catch (error) {
+      console.error("Error getting documents: ", error);
+    }
+  }
+
 
   useEffect(() => {
+    fetchAllUsersAvatar()
     fetchConfessions();
 
     // eslint-disable-next-line
@@ -58,14 +82,16 @@ export default function HomeScreen() {
           style={{
             scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
           }}>
-            {
-              confessions.map((data, index) => {
-                return (
-                  <Card key={index} data={data} />
-                )
-              })
-            
-            }
+          {
+            confessions.map((data, index) => {
+              return (
+                <Card key={index} data={data}
+                avatarName={avatarlist.filter((item) => item.uid === data.uid)[0].avatar}
+                 />
+              )
+            })
+
+          }
         </div>
       </div>
       <div className='mr-2 hidden md:block'>
