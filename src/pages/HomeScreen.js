@@ -26,7 +26,6 @@ export default function HomeScreen() {
         data.push({ ...doc.data(), id: doc.id })
       });
       setConfessions(data)
-      console.log(data)
 
     } catch (error) {
       console.error("Error getting documents: ", error);

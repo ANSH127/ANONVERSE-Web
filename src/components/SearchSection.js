@@ -1,14 +1,64 @@
 import React from 'react'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
+import { usersRef } from '../config/firebase'
+import { getDocs} from 'firebase/firestore'
 export default function SearchSection() {
+    const [userlist, setUserList] = React.useState([])
+    const [searchlist, setSearchList] = React.useState([])
+
+    const fetchAllUsers = async () => {
+        try {
+            let temp = []
+            const data = await getDocs(usersRef)
+            data.forEach((doc) => {
+                temp.push({ ...doc.data(), id: doc.id })
+            })
+            setUserList(temp)
+
+
+        } catch (error) {
+            console.error("Error getting documents: ", error);
+        }
+
+    }
+
+
+
+
+
+
+    React.useEffect(() => {
+        fetchAllUsers()
+        // eslint-disable-next-line
+    }, [])
+
+    const searchUser = (search) => {
+        if(search.length <3) {
+            setSearchList([])
+            return
+        }
+
+
+        let temp = []
+        userlist.forEach((user) => {
+            if (user.name.toLowerCase().includes(search.toLowerCase())) {
+                temp.push(user)
+            }
+        })
+        setSearchList(temp)
+    }
+
+
     return (
         <div className='shadow-lg p-4 my-2 bg-white rounded-lg'>
             {/* // search card */}
             <div className='flex justify-center'>
                 <div className='flex items-center bg-gray-100 rounded-lg p-2 w-full'>
                     <MagnifyingGlassIcon className='h-5 w-5 text-gray-500' />
-                    <input type='text' placeholder='Search' className='bg-transparent outline-none mb-1' />
+                    <input type='text' placeholder='Search' className='bg-transparent outline-none mb-1'
+                        onChange={(e) => searchUser(e.target.value)}
+                    />
                 </div>
             </div>
 
@@ -23,68 +73,23 @@ export default function SearchSection() {
                     }}>
 
                     {/* // user profile box with name and image */}
-                    <div className='flex items-center justify-between bg-gray-100 p-2 mb-1 rounded-lg'>
-                        <div className='flex items-center gap-2'>
-                            <img
-                                src='./images/Avatar/Avatar1.jpg'
-                                alt='avatar'
-                                className='h-8 w-8 rounded-full'
-                            />
-                            <p className='text-sm font-semibold'>John Doe</p>
-                        </div>
+                    {
+                        searchlist.map((user, index) => {
+                            return (
+                                <div key={index} className='flex items-center justify-between bg-gray-100 p-2 mb-1 rounded-lg'>
+                                    <div className='flex items-center gap-2'>
+                                        <img
+                                            src='./images/Avatar/Avatar1.jpg'
+                                            alt='avatar'
+                                            className='h-8 w-8 rounded-full'
+                                        />
+                                        <p className='text-sm font-semibold'>{user.name}</p>
+                                    </div>
+                                </div>
+                            )
+                        })
 
-                    </div>
-                    <div className='flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-1'>
-                        <div className='flex items-center gap-2'>
-                            <img
-                                src='./images/Avatar/Avatar1.jpg'
-                                alt='avatar'
-                                className='h-8 w-8 rounded-full'
-                            />
-                            <p className='text-sm font-semibold'>John Doe</p>
-                        </div>
-
-                    </div>
-                    <div className='flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-1'>
-                        <div className='flex items-center gap-2'>
-                            <img
-                                src='./images/Avatar/Avatar1.jpg'
-                                alt='avatar'
-                                className='h-8 w-8 rounded-full'
-                            />
-                            <p className='text-sm font-semibold'>John Doe</p>
-                        </div>
-
-                    </div>
-                    <div className='flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-1'>
-                        <div className='flex items-center gap-2'>
-                            <img
-                                src='./images/Avatar/Avatar1.jpg'
-                                alt='avatar'
-                                className='h-8 w-8 rounded-full'
-                            />
-                            <p className='text-sm font-semibold'>John Doe</p>
-                        </div>
-
-                    </div>
-                    <div className='flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-1'>
-                        <div className='flex items-center gap-2'>
-                            <img
-                                src='./images/Avatar/Avatar1.jpg'
-                                alt='avatar'
-                                className='h-8 w-8 rounded-full'
-                            />
-                            <p className='text-sm font-semibold'>John Doe</p>
-                        </div>
-
-                    </div>
-
-
-
-
-
-
-
+                    }
 
                 </div>
             </div>
