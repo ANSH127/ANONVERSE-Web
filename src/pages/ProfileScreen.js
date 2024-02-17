@@ -5,13 +5,60 @@ import SearchSection from '../components/SearchSection'
 import TrendingCards from '../components/TrendingCards'
 import { useSelector } from 'react-redux'
 
+import {usersRef } from '../config/firebase'
+import { updateDoc, getDocs, doc, where, query } from 'firebase/firestore'
+
+import { useDispatch } from 'react-redux'
+import {  setAvtar } from '../redux/slices/user';
+
 
 export default function ProfileScreen() {
-  const myavtar=useSelector(state=>state.user.avtar);
+  const dispatch = useDispatch()
+  const myavtar = useSelector(state => state.user.avtar);
   const [changeAvatar, setChangeAvatar] = React.useState(false)
   const [avatar, setAvatar] = React.useState('')
+  const [userData, setUserData] = React.useState({})
 
-  
+  const fetchUserDetails = async () => {
+    try {
+
+      let uid = JSON.parse(localStorage.getItem('user')).uid;
+      const q = query(usersRef, where('uid', '==', uid));
+      const querySnapshot = await getDocs(q);
+      let temp = {}
+      querySnapshot.forEach((doc) => {
+        temp = { ...doc.data(), id: doc.id }
+      });
+      setUserData(temp)
+    } catch (error) {
+      console.error("Error getting documents: ", error);
+
+
+    }
+
+  }
+
+  const updateAvatar = async () => {
+    let docid = userData.id;
+    try {
+      await updateDoc(doc(usersRef, docid), {
+        avatar: avatar-1
+      });
+      dispatch(setAvtar(avatar-1))
+      setChangeAvatar(!changeAvatar)
+
+    } catch (error) {
+      console.error("Error updating document: ", error);
+      alert(error.message)
+    }
+  }
+
+  React.useEffect(() => {
+    fetchUserDetails()
+    // eslint-disable-next-line
+  }, [])
+
+
 
 
 
@@ -37,7 +84,7 @@ export default function ProfileScreen() {
                 myavtar === '' ?
                   './images/sad-face.png'
                   :
-                  `./images/Avatar/Avatar${myavtar+1}.jpg`
+                  `./images/Avatar/Avatar${myavtar + 1}.jpg`
 
               }
               alt='profile'
@@ -51,13 +98,15 @@ export default function ProfileScreen() {
               onClick={() => setChangeAvatar(!changeAvatar)}
             >Change Avatar</p>
 
-            <h1 className='text-2xl py-2 font-bold'>John Doe</h1>
+            <h1 className='text-2xl py-2 font-bold'>
+              {userData.name}
+            </h1>
           </div>
           {/* // email address */}
           <div className='flex justify-center gap-4 items-center space-y-4'>
             <label className='text-gray-500 pt-2'>Email</label>
 
-            <input type='email' className='border border-gray-300 rounded-lg p-2 w-3/4' placeholder='Email Address' defaultValue="anshagrawal12348gmail.com" disabled />
+            <input type='email' className='border border-gray-300 rounded-lg p-2 w-3/4' placeholder='Email Address' defaultValue={userData.email} disabled />
 
           </div>
           {/* // logout button */}
@@ -170,7 +219,7 @@ export default function ProfileScreen() {
             {/* // save button */}
             <div className='flex justify-center mt-4'>
               <button className='bg-blue-500 text-white px-4 py-2 rounded-md'
-                onClick={() => setChangeAvatar(!changeAvatar)}
+                onClick={() => updateAvatar()}
               >
                 Save
               </button>

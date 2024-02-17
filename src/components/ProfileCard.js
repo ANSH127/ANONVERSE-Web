@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 export default function ProfileCard() {
     const avatar = useSelector(state => state.user.avtar);
+    const userName=useSelector(state=>state.user.user);
     const [user, setUser] = React.useState(null)
     const navigate = useNavigate()
 
@@ -39,9 +40,10 @@ export default function ProfileCard() {
                     }
                     
                     alt='profile'
-                    className='rounded-full'
+                    className='rounded-full cursor-pointer border-4 border-blue-500 shadow-lg hover:border-2'
                     width='100'
                     height='100'
+                    onClick={() => navigate('/profile')}
 
                 />
 
@@ -51,7 +53,8 @@ export default function ProfileCard() {
                 <h1 className='text-xl font-bold'>
                     {
                         user !== null ?
-                            'Ansh'
+                            userName?.name
+                            
                             :
                             'You Haven\'t Logged In'
                     }

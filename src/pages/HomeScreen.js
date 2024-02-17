@@ -8,7 +8,7 @@ import { confessionRef, usersRef } from '../config/firebase';
 import { getDocs, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setAvtarList, setAvtar } from '../redux/slices/user';
+import { setAvtarList, setAvtar,setUser } from '../redux/slices/user';
 
 export default function HomeScreen() {
   const dispatch = useDispatch()
@@ -45,12 +45,13 @@ export default function HomeScreen() {
       let data = []
       let querySnapshot = await getDocs(usersRef);
       querySnapshot.forEach((doc) => {
-        data.push({ avatar: doc.data().avatar, uid: doc.data().uid, id: doc.id })
+        data.push({ avatar: doc.data().avatar, uid: doc.data().uid, id: doc.id,name:doc.data().name })
 
       });
       dispatch(setAvtarList(data))
       let avtar = data.filter((item) => item.uid === uid)
       dispatch(setAvtar(avtar[0].avatar))
+      dispatch(setUser(avtar[0]))
 
     } catch (error) {
       console.error("Error getting documents: ", error);
