@@ -28,6 +28,7 @@ export default function TrendingCards() {
         try {
             if (localStorage.getItem('user') === null) {
                 navigate('/login')
+                return
             }
 
             const q = query(confessionRef, orderBy('createdAt', 'desc'), orderBy('likes', 'desc'), orderBy('comments', 'desc'), limit(3));
@@ -71,7 +72,7 @@ export default function TrendingCards() {
                 }}>
 
                 {
-                    confessions.map((confession, index) => (
+                    confessions?.map((confession, index) => (
                         <div key={index} className='shadow-lg  bg-white rounded-lg mb-5'>
                             <div className='flex items-center justify-between'>
                                 <div className='flex items-center space-x-2'>
@@ -106,6 +107,14 @@ export default function TrendingCards() {
                             </div>
                         </div>
                     ))
+
+                }
+                {
+                    confessions.length === 0 && (
+                        <div className='flex items-center justify-center h-80'>
+                            <p className='text-gray-500'>No Confessions</p>
+                        </div>
+                    )
 
                 }
 

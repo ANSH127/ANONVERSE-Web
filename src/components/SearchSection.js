@@ -25,6 +25,9 @@ export default function SearchSection() {
 
     const fetchAllUsers = async () => {
         try {
+            let uid=JSON.parse(localStorage.getItem('user')).uid
+            if(uid===null) return
+
             let temp = []
             const data = await getDocs(usersRef)
             data.forEach((doc) => {
@@ -90,13 +93,13 @@ export default function SearchSection() {
 
                     {/* // user profile box with name and image */}
                     {
-                        searchlist.map((user, index) => {
+                        searchlist?.map((user, index) => {
                             return (
                                 <div key={index} className='flex items-center justify-between bg-gray-100 p-2 mb-1 rounded-lg'>
                                     <div className='flex items-center gap-2'>
                                         <img
                                             src={
-                                                imageList[avatarlist.filter((item) => item.uid === user.uid)[0]?.avatar] 
+                                                imageList[avatarlist.filter((item) => item.uid === user.uid)[0]?.avatar]
                                             }
                                             alt='avatar'
                                             className='h-8 w-8 rounded-full'
@@ -107,6 +110,16 @@ export default function SearchSection() {
                             )
                         })
 
+                    }
+                    {
+                        
+                        searchlist.length === 0 && (
+                            <div className='flex items-center justify-center h-full'>
+                                <p className='text-gray-500'>
+                                    No results found
+                                </p>
+                            </div>
+                        )
                     }
 
                 </div>

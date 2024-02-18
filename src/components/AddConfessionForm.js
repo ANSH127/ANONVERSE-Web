@@ -15,7 +15,11 @@ export default function AddConfessionForm() {
             return
         }
         e.preventDefault()
-        let uid = JSON.parse(localStorage.getItem('user')).uid
+        let uid = JSON.parse(localStorage.getItem('user'))?.uid
+        if (!uid) {
+            alert('Please login to submit confession')
+            return
+        }
         let Username = name;
         try {
             setLoading(true)

@@ -6,9 +6,11 @@ import { updateDoc, getDocs, doc, where, query } from 'firebase/firestore'
 
 import { useDispatch } from 'react-redux'
 import {  setAvtar } from '../redux/slices/user';
+import { useNavigate } from 'react-router-dom'
 
 
 export default function ProfileScreen() {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const myavtar = useSelector(state => state.user.avtar);
   const [changeAvatar, setChangeAvatar] = React.useState(false)
@@ -18,7 +20,13 @@ export default function ProfileScreen() {
   const fetchUserDetails = async () => {
     try {
 
-      let uid = JSON.parse(localStorage.getItem('user')).uid;
+
+      let uid = JSON.parse(localStorage.getItem('user'))?.uid;
+      if (!uid)
+      {
+        navigate('/login')
+        return
+      }  
       const q = query(usersRef, where('uid', '==', uid));
       const querySnapshot = await getDocs(q);
       let temp = {}
@@ -67,7 +75,7 @@ export default function ProfileScreen() {
           <div className='items-center justify-center flex flex-col py-4'>
             <img
               src={
-                myavtar === '' ?
+                myavtar === null ?
                   './images/sad-face.png'
                   :
                   `./images/Avatar/Avatar${myavtar + 1}.jpg`
