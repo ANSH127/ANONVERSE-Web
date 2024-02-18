@@ -1,18 +1,18 @@
 import React from 'react'
-import { HeartIcon, FlagIcon, ChatBubbleBottomCenterIcon,TrashIcon } from '@heroicons/react/24/outline';
+import { HeartIcon, FlagIcon, ChatBubbleBottomCenterIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { formatDistance } from 'date-fns'
 
 import { confessionRef } from '../config/firebase'
-import { updateDoc, doc,deleteDoc } from 'firebase/firestore'
+import { updateDoc, doc, deleteDoc } from 'firebase/firestore'
 
 import { useNavigate } from 'react-router-dom';
-import { HeartIcon as HeartIcon2 } from '@heroicons/react/24/solid'
+import { HeartIcon as HeartIcon2, FlagIcon as FlagIcon2 } from '@heroicons/react/24/solid'
 
 
 
 
-export default function Card({ data,avatarName,deleteConfession }) {
+export default function Card({ data, avatarName, deleteConfession }) {
   const navigate = useNavigate()
   const [liked, setLiked] = React.useState(data?.likedby.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ? true : false)
   const [message, setMessage] = React.useState(false)
@@ -107,6 +107,30 @@ export default function Card({ data,avatarName,deleteConfession }) {
     }
   }
 
+  const handleReport = () => {
+    let uid = JSON.parse(localStorage.getItem('user')).uid;
+    let docid = data.id;
+    try {
+      if (data.reportedBy.indexOf(uid) === -1) {
+        if (window.confirm('Are you sure you want to report this post?')) {
+          updateDoc(doc(confessionRef, docid), {
+            reportedBy: [...data.reportedBy, uid]
+          })
+          alert('Post Reported Successfully')
+          data.reportedBy.push(uid);
+        }
+
+      }
+      else {
+        alert('You have already reported this post')
+      }
+
+    } catch (error) {
+      alert(error.message)
+    }
+
+  }
+
   return (
 
     <div className='shadow-lg p-4 bg-white rounded-lg mb-10 mr-5'>
@@ -115,7 +139,7 @@ export default function Card({ data,avatarName,deleteConfession }) {
           <img
             src={
               avatarName !== null ?
-                `./images/Avatar/Avatar${avatarName+1}.jpg`
+                `./images/Avatar/Avatar${avatarName + 1}.jpg`
                 :
                 './images/sad-face.png'
             }
@@ -137,14 +161,20 @@ export default function Card({ data,avatarName,deleteConfession }) {
         </div>
         {/* // report and delete button */}
         <div className='flex space-x-2'>
-          
+
           {
             data?.uid === JSON.parse(localStorage.getItem('user')).uid && deleteConfession &&
             <TrashIcon className='h-8 w-8 text-red-500' onClick={handleDelete} />}
 
           {
             data?.uid !== JSON.parse(localStorage.getItem('user')).uid &&
-            <FlagIcon className='h-8 w-8' />}
+            <div>
+              {data?.reportedBy.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ?
+              <FlagIcon2 className='h-8 w-8 text-red-600' />
+              :
+              <FlagIcon className='h-8 w-8' onClick={handleReport} />}
+            </div>
+          }
         </div>
 
       </div>
