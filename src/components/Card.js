@@ -131,6 +131,32 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
   }
 
+
+  const handleDeleteComment = async (obj) => {
+    let docid = data.id;
+    let uid = JSON.parse(localStorage.getItem('user')).uid;
+    try {
+      if (uid === obj.uid) {
+        if (window.confirm('Are you sure you want to delete this comment?')) {
+          let index = data.comments.indexOf(obj);
+          data.comments.splice(index, 1);
+          await updateDoc(doc(confessionRef, docid), {
+            comments: data.comments
+          })
+
+          alert('Comment Deleted Successfully')
+          setMessage(false)
+        }
+
+      }
+      else {
+        alert('You are not authorized to delete this comment')
+      }
+    } catch (error) {
+      alert(error.message)
+    }
+  }
+
   return (
 
     <div className='shadow-lg p-4 bg-white rounded-lg mb-10 mr-5'>
@@ -170,9 +196,9 @@ export default function Card({ data, avatarName, deleteConfession }) {
             data?.uid !== JSON.parse(localStorage.getItem('user')).uid &&
             <div>
               {data?.reportedBy.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ?
-              <FlagIcon2 className='h-8 w-8 text-red-600' />
-              :
-              <FlagIcon className='h-8 w-8' onClick={handleReport} />}
+                <FlagIcon2 className='h-8 w-8 text-red-600' />
+                :
+                <FlagIcon className='h-8 w-8' onClick={handleReport} />}
             </div>
           }
         </div>
@@ -255,6 +281,14 @@ export default function Card({ data, avatarName, deleteConfession }) {
                       <h1 className='text-sm font-semibold'>Anonymous</h1>
                       <p className='text-gray-500 text-xs'>{formatDistance(new Date(comment.createdAt), new Date(), { addSuffix: true })}</p>
                     </div>
+
+                    {
+                      comment?.uid === JSON.parse(localStorage.getItem('user')).uid &&
+                      <div className='ml-auto cursor-pointer'>
+                        <TrashIcon className='h-5 w-5  text-red-500' 
+                        onClick={()=>handleDeleteComment(comment)} />
+                      </div>}
+
                   </div>
                   <div>
                     <p className='text-gray-500'>{comment.comment}</p>
