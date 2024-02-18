@@ -1,6 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import {toast} from 'react-toastify'
+
 
 export default function ProfileCard() {
     const avatar = useSelector(state => state.user.avtar);
@@ -20,6 +22,7 @@ export default function ProfileCard() {
     const handleLogout = () => {
         localStorage.removeItem('user')
         navigate('/login')
+        toast.success('Logged Out Successfully')
     }
 
     React.useEffect(() => {

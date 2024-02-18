@@ -16,6 +16,8 @@ import TrendingCards from './components/TrendingCards';
 import ProfileCard from './components/ProfileCard';
 import NavCard from './components/NavCard';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
     <>
@@ -45,6 +47,7 @@ function App() {
               <SearchSection />
               <TrendingCards />
             </div>
+            <ToastContainer />
           </div>
         </Router>
       </Provider>

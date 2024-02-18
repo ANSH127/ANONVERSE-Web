@@ -7,6 +7,7 @@ import { updateDoc, getDocs, doc, where, query } from 'firebase/firestore'
 import { useDispatch } from 'react-redux'
 import {  setAvtar } from '../redux/slices/user';
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
 
 export default function ProfileScreen() {
@@ -35,7 +36,9 @@ export default function ProfileScreen() {
       });
       setUserData(temp)
     } catch (error) {
+
       console.error("Error getting documents: ", error);
+      toast.error('Error fetching user details')
 
 
     }
@@ -53,8 +56,14 @@ export default function ProfileScreen() {
 
     } catch (error) {
       console.error("Error updating document: ", error);
-      alert(error.message)
+      toast.error('Error updating avatar')
     }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    navigate('/login')
+    toast.success('Logged out successfully')
   }
 
   React.useEffect(() => {
@@ -105,7 +114,7 @@ export default function ProfileScreen() {
           </div>
           {/* // logout button */}
           <div className='flex justify-center mt-4'>
-            <button className='bg-blue-500 text-white px-4 py-2 rounded-md'>
+            <button className='bg-blue-500 text-white px-4 py-2 rounded-md' onClick={handleLogout}>
               Logout
             </button>
           </div>

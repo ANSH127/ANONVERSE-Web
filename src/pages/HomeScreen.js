@@ -5,6 +5,7 @@ import { getDocs, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAvtarList, setAvtar,setUser } from '../redux/slices/user';
+import { toast } from 'react-toastify';
 
 export default function HomeScreen() {
   const dispatch = useDispatch()
@@ -16,9 +17,7 @@ export default function HomeScreen() {
 
   const fetchConfessions = async () => {
     try {
-      if (localStorage.getItem('user') === null) {
-        navigate('/login')
-      }
+      
 
       const q = query(confessionRef, orderBy('createdAt', 'desc'));
       const docSnap = await getDocs(q);
@@ -30,6 +29,7 @@ export default function HomeScreen() {
 
     } catch (error) {
       console.error("Error getting documents: ", error);
+      toast.error('Error fetching confessions')
 
 
     }
@@ -37,7 +37,11 @@ export default function HomeScreen() {
 
   const fetchAllUsersAvatar = async () => {
     try {
-      let uid = JSON.parse(localStorage.getItem('user')).uid
+      let uid = JSON.parse(localStorage.getItem('user'))?.uid
+      if (localStorage.getItem('user') === null) {
+        navigate('/login')
+        return
+      }
       let data = []
       let querySnapshot = await getDocs(usersRef);
       querySnapshot.forEach((doc) => {
@@ -51,6 +55,7 @@ export default function HomeScreen() {
 
     } catch (error) {
       console.error("Error getting documents: ", error);
+      toast.error('Error fetching users')
     }
   }
 

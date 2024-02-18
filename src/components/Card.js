@@ -8,6 +8,7 @@ import { updateDoc, doc, deleteDoc } from 'firebase/firestore'
 
 import { useNavigate } from 'react-router-dom';
 import { HeartIcon as HeartIcon2, FlagIcon as FlagIcon2 } from '@heroicons/react/24/solid'
+import {toast} from 'react-toastify'
 
 
 
@@ -46,7 +47,8 @@ export default function Card({ data, avatarName, deleteConfession }) {
       }
 
     } catch (error) {
-      alert(error.message)
+      toast.error('Error liking confession')
+      
 
     }
     finally {
@@ -57,7 +59,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
   const handleComment = async () => {
     if (mesageData.length < 3) {
-      alert('Comment should be atleast 3 characters long')
+      toast.warning('Comment should be atleast 3 characters long')
       return;
     }
     else {
@@ -79,7 +81,8 @@ export default function Card({ data, avatarName, deleteConfession }) {
         data.comments.push(newComment);
 
       } catch (error) {
-        alert(error.message)
+        toast.error('Error commenting on confession')
+
       }
       finally {
         setLoading2(false);
@@ -95,15 +98,15 @@ export default function Card({ data, avatarName, deleteConfession }) {
         // use window.confirm to ask user to confirm the delete
         if (window.confirm('Are you sure you want to delete this confession?')) {
           await deleteDoc(doc(confessionRef, docid));
-          alert('Confession Deleted Successfully');
+          toast.success('Confession deleted successfully')
           navigate('/');
         }
       } else {
-        alert('You are not authorized to delete this post');
+        toast.error('You are not authorized to delete this confession')
       }
 
     } catch (error) {
-      alert(error.message)
+      toast.error('Error deleting confession')
     }
   }
 
@@ -116,17 +119,17 @@ export default function Card({ data, avatarName, deleteConfession }) {
           updateDoc(doc(confessionRef, docid), {
             reportedBy: [...data.reportedBy, uid]
           })
-          alert('Post Reported Successfully')
+          toast.success('Post reported successfully')
           data.reportedBy.push(uid);
         }
 
       }
       else {
-        alert('You have already reported this post')
+        toast.warning('You have already reported this post')
       }
 
     } catch (error) {
-      alert(error.message)
+      toast.error('Error reporting post')
     }
 
   }
@@ -144,16 +147,16 @@ export default function Card({ data, avatarName, deleteConfession }) {
             comments: data.comments
           })
 
-          alert('Comment Deleted Successfully')
+          toast.success('Comment deleted successfully')
           setMessage(false)
         }
 
       }
       else {
-        alert('You are not authorized to delete this comment')
+        toast.error('You are not authorized to delete this comment')
       }
     } catch (error) {
-      alert(error.message)
+      toast.error('Error deleting comment')
     }
   }
 

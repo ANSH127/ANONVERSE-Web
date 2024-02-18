@@ -4,6 +4,8 @@ import Loadar from '../components/Loadar';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth'
 import { auth, usersRef } from '../config/firebase'
 import { addDoc } from 'firebase/firestore'
+import {toast} from 'react-toastify'
+
 
 export default function SignUpScreen() {
     const [loading, setLoading] = React.useState(false)
@@ -13,7 +15,7 @@ export default function SignUpScreen() {
 
     const handleSignUp = async () => {
         if (email === '' || password === '' || Name === '') {
-            alert('All fields are required')
+            toast.warning('Name, Email and password cannot be empty')
             return
         }
         else {
@@ -32,13 +34,14 @@ export default function SignUpScreen() {
                 })
 
 
-                alert('Account created successfully. Please verify your email to login')
+                toast.success('User created successfully, Please verify your email')
                 setEmail('')
                 setPassword('')
                 setName('')
 
             } catch (error) {
-                alert(error.message)
+                console.log(error)
+                toast.error('Error signing up')
             }
             finally {
                 setLoading(false)

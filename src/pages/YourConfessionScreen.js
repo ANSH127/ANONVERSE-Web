@@ -4,6 +4,8 @@ import { confessionRef } from '../config/firebase';
 import { getDocs, where, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import {toast} from 'react-toastify'
+
 
 
 
@@ -19,6 +21,7 @@ export default function YourConfessionScreen() {
 
       if (localStorage.getItem('user') === null) {
         navigate('/login')
+        return
       }
       let uid = JSON.parse(localStorage.getItem('user')).uid
       const q = query(confessionRef, where('uid', '==', uid), orderBy('createdAt', 'desc'))
@@ -33,6 +36,7 @@ export default function YourConfessionScreen() {
 
     } catch (error) {
       console.error("Error getting documents: ", error);
+      toast.error('Error fetching confessions')
 
 
     }

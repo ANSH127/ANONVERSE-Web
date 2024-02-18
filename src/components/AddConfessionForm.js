@@ -3,6 +3,8 @@ import React from 'react'
 import { usersRef, confessionRef } from '../config/firebase'
 import { getDocs, query, where, addDoc } from 'firebase/firestore'
 import Loadar from './Loadar'
+import { toast } from 'react-toastify';
+
 
 export default function AddConfessionForm() {
     const [name, setName] = React.useState('Profile Name')
@@ -11,13 +13,13 @@ export default function AddConfessionForm() {
 
     const handleSubmit = async (e) => {
         if (confession === '') {
-            alert('Confession cannot be empty')
+            toast.error('Confession cannot be empty')
             return
         }
         e.preventDefault()
         let uid = JSON.parse(localStorage.getItem('user'))?.uid
         if (!uid) {
-            alert('Please login to submit confession')
+            toast.error('Please login to submit confession')
             return
         }
         let Username = name;
@@ -41,12 +43,13 @@ export default function AddConfessionForm() {
             })
 
             if (doc) {
-                alert('Confession submitted successfully')
+                toast.success('Confession submitted successfully')
                 setConfession('')
             }
 
         } catch (error) {
-            alert('Error submitting confession')
+            // console.log(error)
+            toast.error('Error submitting confession')
 
         }
         finally {

@@ -4,6 +4,7 @@ import Loadar from '../components/Loadar';
 import { auth } from '../config/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom';
+import {toast} from 'react-toastify'
 
 export default function SignInScreen() {
   const [email, setEmail] = React.useState('')
@@ -13,7 +14,7 @@ export default function SignInScreen() {
 
   const handleSignIn = async () => {
     if (email === '' || password === '') {
-      alert('All fields are required')
+      toast.warning('Email and password cannot be empty')
       return
     }
     else {
@@ -25,18 +26,19 @@ export default function SignInScreen() {
         if(user.emailVerified){
           localStorage.setItem('user',JSON.stringify(user))
 
-          alert('Login success')
+          toast.success('Login successfull')
           setEmail('')
           setPassword('')
           navigate('/')
 
         }
         else{
-          alert('Please verify your email to login')
+          toast.warning('Please verify your email')
         }
 
       } catch (error) {
-        alert(error.message)
+        console.log(error)
+        toast.error('Error signing in')
 
       }
       finally {
