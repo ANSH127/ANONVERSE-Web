@@ -1,8 +1,4 @@
 import React from 'react'
-import NavCard from '../components/NavCard'
-import ProfileCard from '../components/ProfileCard'
-import SearchSection from '../components/SearchSection'
-import TrendingCards from '../components/TrendingCards'
 import { useSelector } from 'react-redux'
 
 import {usersRef } from '../config/firebase'
@@ -63,16 +59,6 @@ export default function ProfileScreen() {
 
 
   return (
-
-    <div className='grid-cols-1 grid md:grid-cols-4 gap-8  h-full p-4 m-2 fixed w-full' style={{ height: '100%' }}>
-      <div className='hidden md:block gap-4 col-span-1'>
-        {/* // profile card */}
-        <ProfileCard />
-        {/* // navigation card */}
-        <NavCard />
-
-
-      </div>
       <div className='gap-4 col-span-2 h-full shadow-lg mr-5'>
         {/* // main content */}
         {!changeAvatar && <div className=' '>
@@ -231,11 +217,6 @@ export default function ProfileScreen() {
         }
 
       </div>
-      <div className='mr-2 hidden md:block'>
-
-        <SearchSection />
-        <TrendingCards />
-      </div>
-    </div>
+    
   )
 }
