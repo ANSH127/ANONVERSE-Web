@@ -96,7 +96,7 @@ export default function SearchSection() {
                                     <div className='flex items-center gap-2'>
                                         <img
                                             src={
-                                                imageList[avatarlist.filter((item) => item.uid === user.uid)[0].avatar] 
+                                                imageList[avatarlist.filter((item) => item.uid === user.uid)[0]?.avatar] 
                                             }
                                             alt='avatar'
                                             className='h-8 w-8 rounded-full'

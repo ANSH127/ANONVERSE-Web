@@ -33,7 +33,7 @@ export default function YourConfessionScreen() {
         data.push({ ...doc.data(), id: doc.id })
       });
       setConfessions(data)
-      console.log(data)
+      // console.log(data)
 
     } catch (error) {
       console.error("Error getting documents: ", error);
@@ -70,7 +70,8 @@ export default function YourConfessionScreen() {
             confessions.map((data, index) => {
               return (
                 <Card key={index} data={data}
-                  avatarName={avatarlist.filter((item) => item.uid === data.uid)[0].avatar}
+                  avatarName={avatarlist.filter((item) => item.uid === data.uid)[0]?.avatar}
+                  deleteConfession={true}
 
                 />
               )
