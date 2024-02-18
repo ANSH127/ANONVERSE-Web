@@ -22,7 +22,7 @@ export default function BottemNavigation() {
                 
                 <button type="button" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50  group"
                 onClick={()=>{
-                    navigate('/your');
+                    navigate('/yourconfession');
                 }}>
                 
                     
@@ -33,7 +33,7 @@ export default function BottemNavigation() {
 
                 <button type="button" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50  group" 
                 onClick={()=>{
-                    navigate('/add');
+                    navigate('/addconfession');
                 }}
                 >
                     <PlusCircleIcon className='h-8 w-8' />

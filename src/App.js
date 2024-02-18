@@ -33,8 +33,8 @@ function App() {
 
             <Routes>
               <Route path="/" element={<HomeScreen />} />
-              <Route path="/add" element={<AddConfessionScreen />} />
-              <Route path="/your" element={<YourConfessionScreen />} />
+              <Route path="/addconfession" element={<AddConfessionScreen />} />
+              <Route path="/yourconfession" element={<YourConfessionScreen />} />
               <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/login" element={<SignInScreen />} />
               <Route path="/signup" element={<SignUpScreen />} />
