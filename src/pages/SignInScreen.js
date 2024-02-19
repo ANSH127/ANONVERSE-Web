@@ -3,14 +3,12 @@ import { Link } from 'react-router-dom';
 import Loadar from '../components/Loadar';
 import { auth } from '../config/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify'
 
 export default function SignInScreen() {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [loading, setLoading] = React.useState(false)
-  const navigate = useNavigate()
 
   const handleSignIn = async () => {
     if (email === '' || password === '') {
