@@ -62,7 +62,7 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     localStorage.removeItem('user')
-    navigate('/login')
+    window.location.href = '/'
     toast.success('Logged out successfully')
   }
 

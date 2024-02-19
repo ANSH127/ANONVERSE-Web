@@ -21,7 +21,7 @@ export default function ProfileCard() {
 
     const handleLogout = () => {
         localStorage.removeItem('user')
-        navigate('/login')
+        window.location.href = '/'
         toast.success('Logged Out Successfully')
     }
 

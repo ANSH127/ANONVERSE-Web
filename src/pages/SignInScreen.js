@@ -29,7 +29,7 @@ export default function SignInScreen() {
           toast.success('Login successfull')
           setEmail('')
           setPassword('')
-          navigate('/')
+          window.location.href='/'
 
         }
         else{
