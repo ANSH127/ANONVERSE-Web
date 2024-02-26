@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAvtarList, setAvtar, setUser } from '../redux/slices/user';
 import { toast } from 'react-toastify';
+import Loadar from '../components/Loadar';
 
 export default function HomeScreen() {
   const dispatch = useDispatch()
@@ -77,9 +78,7 @@ export default function HomeScreen() {
       {/* // main content */}
       {
         loading ?
-          <div className='flex justify-center items-center h-full'>
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-          </div>
+          <Loadar />
           :
           <div className=' overflow-y-auto overflow-x-hidden'
             style={{

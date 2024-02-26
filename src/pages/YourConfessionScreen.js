@@ -5,6 +5,7 @@ import { getDocs, where, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify'
+import Loadar from '../components/Loadar';
 
 
 
@@ -60,9 +61,8 @@ export default function YourConfessionScreen() {
       {
 
         loading ?
-          <div className="flex items-center justify-center h-screen">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-          </div> :
+        <Loadar />
+         :
 
           <div className=' overflow-y-auto overflow-x-hidden'
             style={{
