@@ -31,7 +31,7 @@ export default function TrendingCards() {
                 return
             }
 
-            const q = query(confessionRef, orderBy('createdAt', 'desc'), orderBy('likes', 'desc'), orderBy('comments', 'desc'), limit(3));
+            const q = query(confessionRef, orderBy('likes', 'desc'), orderBy('comments', 'desc'), orderBy('createdAt', 'desc'), limit(3));
             const docSnap = await getDocs(q);
             let data = []
             docSnap.forEach((doc) => {
@@ -96,13 +96,13 @@ export default function TrendingCards() {
                                 </div>
 
                             </div>
-                            <div className='mt-2'>
+                            <div className='mt-2 pb-2'>
                                 <p className='text-xs'>
                                     {confession.description}
                                 </p>
 
                                 {/* // read more gray color text */}
-                                <p className='text-gray-500 text-xs '>Read More</p>
+                                {/* <p className='text-gray-500 text-xs '>Read More</p> */}
 
                             </div>
                         </div>

@@ -221,7 +221,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
         </p>
 
         {/* // read more gray color text */}
-        <p className='text-gray-500 '>Read More</p>
+        {/* <p className='text-gray-500 '>Read More</p> */}
 
       </div>
       {/* // like and comment button */}
