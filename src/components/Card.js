@@ -14,6 +14,7 @@ import {toast} from 'react-toastify'
 
 
 export default function Card({ data, avatarName, deleteConfession }) {
+  // console.log(data);
   const navigate = useNavigate()
   const [liked, setLiked] = React.useState(data?.likedby.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ? true : false)
   const [message, setMessage] = React.useState(false)
@@ -208,6 +209,13 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
       </div>
       <div className='mt-2'>
+        {
+          data.reportedBy.length >5 &&  data.uid===JSON.parse(localStorage.getItem('user')).uid  &&
+          <p className='text-red-500 font-semibold'>
+            This post has been reported by many users and may be not visible to others.
+          </p>
+
+        }
         <p className=''>
           {data?.description}
         </p>

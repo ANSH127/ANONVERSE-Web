@@ -4,7 +4,7 @@ import { confessionRef, usersRef } from '../config/firebase';
 import { getDocs, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setAvtarList, setAvtar,setUser } from '../redux/slices/user';
+import { setAvtarList, setAvtar, setUser } from '../redux/slices/user';
 import { toast } from 'react-toastify';
 
 export default function HomeScreen() {
@@ -13,12 +13,13 @@ export default function HomeScreen() {
 
   const navigate = useNavigate()
   const [confessions, setConfessions] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
 
 
   const fetchConfessions = async () => {
     try {
-      
 
+      setLoading(true)
       const q = query(confessionRef, orderBy('createdAt', 'desc'));
       const docSnap = await getDocs(q);
       let data = []
@@ -33,6 +34,9 @@ export default function HomeScreen() {
 
 
     }
+    finally {
+      setLoading(false)
+    }
   }
 
   const fetchAllUsersAvatar = async () => {
@@ -45,7 +49,7 @@ export default function HomeScreen() {
       let data = []
       let querySnapshot = await getDocs(usersRef);
       querySnapshot.forEach((doc) => {
-        data.push({ avatar: doc.data().avatar, uid: doc.data().uid, id: doc.id,name:doc.data().name })
+        data.push({ avatar: doc.data().avatar, uid: doc.data().uid, id: doc.id, name: doc.data().name })
 
       });
       dispatch(setAvtarList(data))
@@ -69,24 +73,35 @@ export default function HomeScreen() {
 
 
   return (
-      <div className='gap-4 col-span-2 h-full shadow-lg'>
-        {/* // main content */}
-        <div className=' overflow-y-auto overflow-x-hidden'
-          style={{
-            scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
-          }}>
-          {
-            confessions.map((data, index) => {
-              return (
-                <Card key={index} data={data}
-                avatarName={avatarlist.filter((item) => item.uid === data.uid)[0].avatar}
-                 />
-              )
-            })
+    <div className='gap-4 col-span-2 h-full shadow-lg'>
+      {/* // main content */}
+      {
+        loading ?
+          <div className='flex justify-center items-center h-full'>
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+          </div>
+          :
+          <div className=' overflow-y-auto overflow-x-hidden'
+            style={{
+              scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
+            }}>
+            {
+              confessions.length > 0 ?
+                confessions.map((data, index) => {
+                  return (
+                    data.reportedBy.length<6 &&
+                    <Card key={index} data={data}
+                      avatarName={avatarlist.filter((item) => item.uid === data.uid)[0].avatar}
+                    />
+                  )
+                }) :
+                <h1 className='text-3xl font-semibold text-center mt-4 mb-4'>
+                  No Confessions Found
+                </h1>
+            }
+          </div>
+      }
+    </div>
 
-          }
-        </div>
-      </div>
-      
   );
 }
