@@ -8,7 +8,7 @@ import { updateDoc, doc, deleteDoc } from 'firebase/firestore'
 
 import { useNavigate } from 'react-router-dom';
 import { HeartIcon as HeartIcon2, FlagIcon as FlagIcon2 } from '@heroicons/react/24/solid'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 
 
 
@@ -49,7 +49,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
     } catch (error) {
       toast.error('Error liking confession')
-      
+
 
     }
     finally {
@@ -73,12 +73,13 @@ export default function Card({ data, avatarName, deleteConfession }) {
         let newComment = {
           comment: mesageData,
           uid: uid,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          reportedBy: []
+
         }
         await updateDoc(doc(confessionRef, docid), {
           comments: [...data.comments, newComment]
         })
-        setMessage('')
         data.comments.push(newComment);
 
       } catch (error) {
@@ -86,6 +87,8 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
       }
       finally {
+        setMessage(false);
+        setMessageData('');
         setLoading2(false);
       }
     }
@@ -161,6 +164,34 @@ export default function Card({ data, avatarName, deleteConfession }) {
     }
   }
 
+  const handleReportComment = async (obj) => {
+
+    let docid = data.id;
+    let uid = JSON.parse(localStorage.getItem('user')).uid;
+    try {
+      if (window.confirm('Are you sure you want to report this comment?')) {
+        let index = data.comments.indexOf(obj);
+        data.comments[index].reportedBy = data.comments[index].reportedBy || [];
+        if (data.comments[index].reportedBy.indexOf(uid) === -1) {
+          data.comments[index].reportedBy.push(uid);
+          await updateDoc(doc(confessionRef, docid), {
+            comments: data.comments
+          })
+          toast.success('Comment reported successfully')
+        }
+        else {
+          toast.warning('You have already reported this comment')
+        }
+
+      }
+
+
+    } catch (error) {
+      toast.error('Error reporting comment')
+
+    }
+  }
+
   return (
 
     <div className='shadow-lg p-4 bg-white rounded-lg mb-10 mr-5'>
@@ -210,7 +241,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
       </div>
       <div className='mt-2'>
         {
-          data.reportedBy.length >5 &&  data.uid===JSON.parse(localStorage.getItem('user')).uid  &&
+          data.reportedBy.length > 5 && data.uid === JSON.parse(localStorage.getItem('user')).uid &&
           <p className='text-red-500 font-semibold'>
             This post has been reported by many users and may be not visible to others.
           </p>
@@ -278,6 +309,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
           {
             data?.comments.map((comment, index) => {
               return (
+                (comment.reportedBy.length) < 5 &&
                 <div key={index} className=' mt-4  bg-gray-100 p-2 rounded-lg'>
                   <div className='flex space-x-2  items-center'>
                     <img
@@ -296,9 +328,21 @@ export default function Card({ data, avatarName, deleteConfession }) {
                     {
                       comment?.uid === JSON.parse(localStorage.getItem('user')).uid &&
                       <div className='ml-auto cursor-pointer'>
-                        <TrashIcon className='h-5 w-5  text-red-500' 
-                        onClick={()=>handleDeleteComment(comment)} />
+                        <TrashIcon className='h-5 w-5  text-red-500'
+                          onClick={() => handleDeleteComment(comment)} />
                       </div>}
+
+                    {
+                      comment?.uid !== JSON.parse(localStorage.getItem('user')).uid &&
+                      comment?.reportedBy.indexOf(JSON.parse(localStorage.getItem('user')).uid)=== -1 
+                      &&
+                      <div className='ml-auto cursor-pointer'>
+                        <FlagIcon className='h-5 w-5'
+                          onClick={
+                            () => handleReportComment(comment)
+                          } />
+                      </div>
+                    }
 
                   </div>
                   <div>
