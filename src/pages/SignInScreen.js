@@ -60,7 +60,7 @@ export default function SignInScreen() {
             {/* // signin form */}
 
             <input type="text" placeholder="Email" className="w-full p-4 border-2 border-gray-300 rounded-lg"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}  autoComplete
             />
             <input type="password" placeholder="Password" className="w-full p-4 border-2 border-gray-300 rounded-lg"
               onChange={(e) => setPassword(e.target.value)}
