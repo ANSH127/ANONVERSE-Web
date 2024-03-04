@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import Card from '../components/Card';
 import { confessionRef, usersRef } from '../config/firebase';
-import { getDocs, query, orderBy } from 'firebase/firestore'
+import { getDocs, query, orderBy, limit, startAfter } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAvtarList, setAvtar, setUser } from '../redux/slices/user';
 import { toast } from 'react-toastify';
 import Loadar from '../components/Loadar';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export default function HomeScreen() {
   const dispatch = useDispatch()
@@ -15,13 +16,14 @@ export default function HomeScreen() {
   const navigate = useNavigate()
   const [confessions, setConfessions] = React.useState([])
   const [loading, setLoading] = React.useState(false)
+  const [hasMore, setHasMore] = React.useState(true)
 
 
   const fetchConfessions = async () => {
     try {
 
       setLoading(true)
-      const q = query(confessionRef, orderBy('createdAt', 'desc'));
+      const q = query(confessionRef, orderBy('createdAt', 'desc'), limit(5));
       const docSnap = await getDocs(q);
       let data = []
       docSnap.forEach((doc) => {
@@ -64,6 +66,27 @@ export default function HomeScreen() {
     }
   }
 
+  const fetchMoreConfessions = async () => {
+    try {
+      const q = query(confessionRef, orderBy('createdAt', 'desc'), startAfter(confessions[confessions.length - 1].createdAt), limit(5));
+      const docSnap = await getDocs(q);
+      let data = []
+      docSnap.forEach((doc) => {
+        data.push({ ...doc.data(), id: doc.id })
+      });
+      if (data.length < 5) {
+        toast.info('No more confessions to load')
+        setHasMore(false)
+      }
+      setConfessions(confessions.concat(data))
+
+    } catch (error) {
+      console.error("Error getting documents: ", error);
+      toast.error('Error fetching confessions')
+
+    }
+  }
+
 
   useEffect(() => {
     fetchAllUsersAvatar()
@@ -81,19 +104,35 @@ export default function HomeScreen() {
           <Loadar />
           :
           <div className=' overflow-y-auto overflow-x-hidden'
-            style={{
-              scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
-            }}>
+          >
             {
               confessions.length > 0 ?
-                confessions.map((data, index) => {
-                  return (
-                    data.reportedBy.length<6 &&
-                    <Card key={index} data={data}
-                      avatarName={avatarlist.filter((item) => item.uid === data.uid)[0].avatar}
-                    />
-                  )
-                }) :
+                <InfiniteScroll
+                  dataLength={confessions.length}
+                  next={fetchMoreConfessions}
+                  hasMore={hasMore}
+
+                  loader={
+                    <Loadar />
+                  }
+                  height={'100vh'}
+                  style={{
+                    scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px'
+                  }}
+                >
+                  {
+                    confessions.map((data, index) => (
+                      data.reportedBy.length < 6 &&
+
+                      <Card key={index} data={data}
+                        avatarName={avatarlist.filter((item) => item.uid === data.uid)[0].avatar}
+                      />
+                    ))
+                  }
+
+                </InfiniteScroll>
+
+                :
                 <h1 className='text-3xl font-semibold text-center mt-4 mb-4'>
                   No Confessions Found
                 </h1>
