@@ -87,9 +87,10 @@ export default function SearchSection() {
                 <div className='mt-2 overflow-y-auto h-24 overflow-x-hidden'
                     style={{
                         paddingBottom: '10px',
-                        scrollbarColor: 'rgba(0, 0, 0, 0.1) transparent',
                         scrollbarWidth: 'thin',
                         scrollBehavior: 'smooth',
+                        scrollbarColor: '#137de7 #F4F4F4',
+
                     }}>
 
                     {/* // user profile box with name and image */}
