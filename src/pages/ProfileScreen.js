@@ -9,8 +9,10 @@ import {  setAvtar } from '../redux/slices/user';
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
+import { theme } from '../theme';
 
 export default function ProfileScreen() {
+  const mode=useSelector(state=>state.user.theme)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const myavtar = useSelector(state => state.user.avtar);
@@ -107,9 +109,9 @@ export default function ProfileScreen() {
           </div>
           {/* // email address */}
           <div className='flex justify-center gap-4 items-center space-y-4'>
-            <label className='text-gray-500 pt-2'>Email</label>
+            <label className={` ${mode?theme.black:theme.white} font-semibold pt-2`}>Email</label>
 
-            <input type='email' className='border border-gray-300 rounded-lg p-2 w-3/4' placeholder='Email Address' defaultValue={userData.email} disabled />
+            <input type='email' className={` ${mode?theme.black:theme.white} border border-gray-300 rounded-lg p-2 w-3/4`} placeholder='Email Address' defaultValue={userData.email} disabled />
 
           </div>
           {/* // logout button */}
