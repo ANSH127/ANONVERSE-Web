@@ -5,6 +5,7 @@ import { usersRef } from '../config/firebase'
 import { getDocs } from 'firebase/firestore'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { theme } from '../theme';
 
 
 
@@ -23,6 +24,7 @@ export default function SearchSection() {
     const avatarlist = useSelector(state => state.user.AvtarList)
     const [userlist, setUserList] = React.useState([])
     const [searchlist, setSearchList] = React.useState([])
+    const mode=useSelector(state=>state.user.theme)
 
     const fetchAllUsers = async () => {
         try {
@@ -71,12 +73,12 @@ export default function SearchSection() {
 
 
     return (
-        <div className='shadow-lg p-4 my-2 bg-white rounded-lg'>
+        <div className={`shadow-lg p-4 my-2 ${mode?theme.black:theme.white}  rounded-lg`}>
             {/* // search card */}
             <div className='flex justify-center'>
-                <div className='flex items-center bg-gray-100 rounded-lg p-2 w-full'>
+                <div className={`flex items-center  rounded-lg p-2 w-full ${mode?'bg-black':'bg-gray-100'}`}>
                     <MagnifyingGlassIcon className='h-5 w-5 text-gray-500' />
-                    <input type='text' placeholder='Search' className='bg-transparent outline-none mb-1'
+                    <input type='text' placeholder='Search' className={`bg-transparent  outline-none mb-1`}
                         onChange={(e) => searchUser(e.target.value)}
                     />
                 </div>
@@ -98,7 +100,7 @@ export default function SearchSection() {
                         searchlist?.map((user, index) => {
                             return (
                                 <Link to={`/profile/${user.uid}`} key={index}>
-                                    <div key={index} className='flex items-center justify-between bg-gray-100 p-2 mb-1 rounded-lg'>
+                                    <div key={index} className={`flex items-center justify-between ${mode?'bg-black':'bg-gray-100'}  shadow-lg p-2 mb-1 rounded-lg`}>
                                         <div className='flex items-center gap-2'>
                                             <img
                                                 src={

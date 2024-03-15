@@ -2,12 +2,14 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {toast} from 'react-toastify'
+import { theme } from '../theme';
 
 
 export default function ProfileCard() {
     const avatar = useSelector(state => state.user.avtar);
     const userName=useSelector(state=>state.user.user);
     const [user, setUser] = React.useState(null)
+    const mode=useSelector(state=>state.user.theme)
     const navigate = useNavigate()
 
 
@@ -31,7 +33,7 @@ export default function ProfileCard() {
     }, [])
 
     return (
-        <div className='shadow-lg p-4 bg-white rounded-lg'>
+        <div className={`shadow-lg p-4 ${mode?theme.black:theme.white}  rounded-lg`}>
             <div className='flex justify-center'>
                 <img
                     src=

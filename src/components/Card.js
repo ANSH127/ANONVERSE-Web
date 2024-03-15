@@ -10,10 +10,12 @@ import { useNavigate } from 'react-router-dom';
 import { HeartIcon as HeartIcon2, FlagIcon as FlagIcon2 } from '@heroicons/react/24/solid'
 import { toast } from 'react-toastify'
 
+import { theme } from '../theme';
 
-
+import { useSelector } from 'react-redux'
 
 export default function Card({ data, avatarName, deleteConfession }) {
+  const mode = useSelector(state => state.user.theme);
   // console.log(data);
   const navigate = useNavigate()
   const [liked, setLiked] = React.useState(data?.likedby.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ? true : false)
@@ -194,7 +196,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
   return (
 
-    <div className='shadow-lg p-4 bg-white rounded-lg mb-10 mr-5'>
+    <div className={`shadow-lg p-4  rounded-lg mb-10 mr-5 ${mode?theme.black:theme.white} `} >
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
           <img
@@ -290,7 +292,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
           {/* // comment box here with black border */}
           <div className='flex items-center space-x-2'>
             <textarea
-              className='w-full border border-gray-300 rounded-lg p-2'
+              className={`w-full border ${mode?theme.black:' border-gray-300'} rounded-lg p-2`}
               placeholder='Type your comment here'
               value={mesageData}
               onChange={(e) => setMessageData(e.target.value)}
@@ -310,7 +312,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
             data?.comments.map((comment, index) => {
               return (
                 (comment.reportedBy.length) < 5 &&
-                <div key={index} className=' mt-4  bg-gray-100 p-2 rounded-lg'>
+                <div key={index} className={` mt-4 ${mode?theme.black:'bg-gray-100'}  p-2 rounded-lg`}>
                   <div className='flex space-x-2  items-center'>
                     <img
                       src='./images/Avatar.jpg'

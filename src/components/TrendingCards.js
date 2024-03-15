@@ -4,6 +4,7 @@ import { getDocs, query, orderBy, limit } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { formatDistance } from 'date-fns'
 import { useSelector } from 'react-redux';
+import { theme } from '../theme';
 
 
 
@@ -22,7 +23,7 @@ export default function TrendingCards() {
     const avatarlist = useSelector(state => state.user.AvtarList);
     const navigate = useNavigate()
     const [confessions, setConfessions] = React.useState([])
-
+    const mode=useSelector(state=>state.user.theme)
 
     const fetchConfessions = async () => {
         try {
@@ -57,7 +58,7 @@ export default function TrendingCards() {
 
     return (
 
-        <div className='shadow-lg p-4 my-4 h-full  bg-white rounded-lg'>
+        <div className={`shadow-lg p-4 my-4 h-full ${mode?theme.black:theme.white} rounded-lg`}>
 
             {/* // trending confesssions */}
 
@@ -74,7 +75,7 @@ export default function TrendingCards() {
 
                 {
                     confessions?.map((confession, index) => (
-                        <div key={index} className='shadow-lg  bg-white rounded-lg mb-5'>
+                        <div key={index} className={`shadow-lg ${mode?theme.black:theme.white} rounded-lg mb-5`}>
                             <div className='flex items-center justify-between'>
                                 <div className='flex items-center space-x-2'>
                                     <img

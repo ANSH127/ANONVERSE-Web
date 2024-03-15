@@ -15,7 +15,7 @@ export default function ProfileScreen() {
   const dispatch = useDispatch()
   const myavtar = useSelector(state => state.user.avtar);
   const [changeAvatar, setChangeAvatar] = React.useState(false)
-  const [avatar, setAvatar] = React.useState('')
+  const [avatar, setAvatar] = React.useState(1)
   const [userData, setUserData] = React.useState({})
 
   const fetchUserDetails = async () => {

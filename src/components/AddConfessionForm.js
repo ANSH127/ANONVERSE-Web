@@ -4,12 +4,15 @@ import { usersRef, confessionRef } from '../config/firebase'
 import { getDocs, query, where, addDoc } from 'firebase/firestore'
 import Loadar from './Loadar'
 import { toast } from 'react-toastify';
+import { theme } from '../theme';
+import { useSelector } from 'react-redux'
 
 
 export default function AddConfessionForm() {
     const [name, setName] = React.useState('Profile Name')
     const [confession, setConfession] = React.useState('')
     const [loading, setLoading] = React.useState(false)
+    const mode=useSelector(state=>state.user.theme)
 
     const handleSubmit = async (e) => {
         if (confession === '') {
@@ -67,7 +70,7 @@ export default function AddConfessionForm() {
             }}>
 
             <div className="flex justify-center">
-                <img src='./images/confession.jpg' alt='confession' className='rounded-lg '
+                <img src='./images/conf.png' alt='confession' className='rounded-lg '
                     width='auto' height='auto'
                 />
             </div>
@@ -75,16 +78,16 @@ export default function AddConfessionForm() {
 
 
                 {/* // select name profile name or anonymous */}
-                <select className="w-full p-4 border-2 border-gray-300 rounded-lg"
+                <select className={`w-full p-4 border-2 ${mode?"bg-black":'bg-white'} border-gray-300 rounded-lg`}
                     onChange={(e) => setName(e.target.value)}
-                    defaultValue="Profile Name"
+                    defaultValue="Anonymous"
                 >
                     <option value="Profile Name">Profile Name</option>
                     <option value="Anonymous">Anonymous</option>
                 </select>
 
 
-                <textarea placeholder="Confession" className="w-full p-4 border-2 border-gray-300 rounded-lg" rows={4}
+                <textarea placeholder="Confession" className={`w-full p-4 border-2 ${mode?"bg-black":'bg-white'} border-gray-300 rounded-lg`} rows={4}
                     onChange={(e) => setConfession(e.target.value)}
                     value={confession}
                 />

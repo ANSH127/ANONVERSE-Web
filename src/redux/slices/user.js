@@ -7,7 +7,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     user: null,
     avtar: null,
-    AvtarList: []
+    AvtarList: [],
+    theme:0
 }
 
 export const userSlice = createSlice({
@@ -23,7 +24,11 @@ export const userSlice = createSlice({
         },
         setAvtarList: (state, action) => {
             state.AvtarList = action.payload
+        },
+        setTheme : (state,action) =>{
+            state.theme=action.payload
         }
+
 
 
 
@@ -31,7 +36,7 @@ export const userSlice = createSlice({
     },
 })
 
-export const { setUser, setAvtar,setAvtarList } = userSlice.actions
+export const { setUser, setAvtar,setAvtarList,setTheme } = userSlice.actions
 
 
 export default userSlice.reducer
