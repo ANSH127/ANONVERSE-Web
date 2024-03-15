@@ -26,6 +26,7 @@ export default function AppNavigation() {
     
     <Router>
     <Header />
+    
     <BottemNavigation />
 
     <div className={`grid-cols-1 grid md:grid-cols-4 gap-8 m-0 h-full p-4  fixed w-full ${mode?theme.black:theme.white}`} style={{ height: '100%' }}>
