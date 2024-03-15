@@ -5,9 +5,12 @@ import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/
 import { auth, usersRef } from '../config/firebase'
 import { addDoc } from 'firebase/firestore'
 import {toast} from 'react-toastify'
+import { theme } from '../theme';
+import { useSelector } from 'react-redux'
 
 
 export default function SignUpScreen() {
+    const mode=useSelector(state=>state.user.theme)
     const [loading, setLoading] = React.useState(false)
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
@@ -64,13 +67,13 @@ export default function SignUpScreen() {
                 </div>
                 <div className="flex flex-col gap-4 p-4">
 
-                    <input type="text" placeholder="Full Name" className="w-full p-4 border-2 border-gray-300 rounded-lg"
+                    <input type="text" placeholder="Full Name" className={`w-full p-4 border-2 ${mode?theme.black:theme.white} border-gray-300 rounded-lg`}
                         onChange={(e) => setName(e.target.value)} autoComplete
                     />
-                    <input type="text" placeholder="Email" className="w-full p-4 border-2 border-gray-300 rounded-lg"
+                    <input type="text" placeholder="Email" className={`w-full p-4 border-2 ${mode?theme.black:theme.white} border-gray-300 rounded-lg`}
                         onChange={(e) => setEmail(e.target.value)} autoComplete
                     />
-                    <input type="password" placeholder="Password" className="w-full p-4 border-2 border-gray-300 rounded-lg"
+                    <input type="password" placeholder="Password" className={`w-full p-4 border-2 ${mode?theme.black:theme.white} border-gray-300 rounded-lg`}
                         onChange={(e) => setPassword(e.target.value)}
                     />
 
