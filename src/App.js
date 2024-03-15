@@ -9,6 +9,7 @@ import Header from './components/Header';
 import BottemNavigation from './components/BottemNavigation';
 import SignInScreen from './pages/SignInScreen';
 import SignUpScreen from './pages/SignUpScreen';
+import UserProfileScreen from './pages/UserProfileScreen';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import SearchSection from './components/SearchSection';
@@ -40,6 +41,7 @@ function App() {
               <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/login" element={<SignInScreen />} />
               <Route path="/signup" element={<SignUpScreen />} />
+              <Route path="/profile/:uid" element={<UserProfileScreen />} />
             </Routes>
 
             <div className='mr-2 hidden md:block'>

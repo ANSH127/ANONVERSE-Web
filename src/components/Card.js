@@ -200,9 +200,9 @@ export default function Card({ data, avatarName, deleteConfession }) {
           <img
             src={
               avatarName !== null ?
-                `./images/Avatar/Avatar${avatarName + 1}.jpg`
+                `/images/Avatar/Avatar${avatarName + 1}.jpg`
                 :
-                './images/sad-face.png'
+                '/images/sad-face.png'
             }
             alt='profile'
             className='rounded-full'

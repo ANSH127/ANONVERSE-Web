@@ -4,17 +4,18 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { usersRef } from '../config/firebase'
 import { getDocs } from 'firebase/firestore'
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 
 
 const imageList = [
 
-    './images/Avatar/Avatar1.jpg',
-    './images/Avatar/Avatar2.jpg',
-    './images/Avatar/Avatar3.jpg',
-    './images/Avatar/Avatar4.jpg',
-    './images/Avatar/Avatar5.jpg',
-    './images/Avatar/Avatar6.jpg',
+    '/images/Avatar/Avatar1.jpg',
+    '/images/Avatar/Avatar2.jpg',
+    '/images/Avatar/Avatar3.jpg',
+    '/images/Avatar/Avatar4.jpg',
+    '/images/Avatar/Avatar5.jpg',
+    '/images/Avatar/Avatar6.jpg',
 
 ]
 
@@ -25,8 +26,8 @@ export default function SearchSection() {
 
     const fetchAllUsers = async () => {
         try {
-            let uid=JSON.parse(localStorage.getItem('user')).uid
-            if(uid===null) return
+            let uid = JSON.parse(localStorage.getItem('user')).uid
+            if (uid === null) return
 
             let temp = []
             const data = await getDocs(usersRef)
@@ -95,24 +96,26 @@ export default function SearchSection() {
                     {
                         searchlist?.map((user, index) => {
                             return (
-                                <div key={index} className='flex items-center justify-between bg-gray-100 p-2 mb-1 rounded-lg'>
-                                    <div className='flex items-center gap-2'>
-                                        <img
-                                            src={
-                                                imageList[avatarlist.filter((item) => item.uid === user.uid)[0]?.avatar]
-                                            }
-                                            alt='avatar'
-                                            className='h-8 w-8 rounded-full'
-                                        />
-                                        <p className='text-sm font-semibold'>{user.name}</p>
+                                <Link to={`/profile/${user.uid}`} key={index}>
+                                    <div key={index} className='flex items-center justify-between bg-gray-100 p-2 mb-1 rounded-lg'>
+                                        <div className='flex items-center gap-2'>
+                                            <img
+                                                src={
+                                                    imageList[avatarlist.filter((item) => item.uid === user.uid)[0]?.avatar]
+                                                }
+                                                alt='avatar'
+                                                className='h-8 w-8 rounded-full'
+                                            />
+                                            <p className='text-sm font-semibold'>{user.name}</p>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             )
                         })
 
                     }
                     {
-                        
+
                         searchlist.length === 0 && (
                             <div className='flex items-center justify-center h-full'>
                                 <p className='text-gray-500'>

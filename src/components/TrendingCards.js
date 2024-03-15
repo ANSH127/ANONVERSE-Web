@@ -66,8 +66,9 @@ export default function TrendingCards() {
             <div className='mt-2 overflow-y-auto h-96 overflow-x-hidden'
                 style={{
                     paddingBottom: '120px',
-                    scrollbarColor: 'rgba(0, 0, 0, 0.1) transparent',
                     scrollbarWidth: 'thin',
+                    scrollbarColor: '#137de7 #F4F4F4',
+
                     scrollBehavior: 'smooth',
                 }}>
 
