@@ -4,7 +4,6 @@ import { usersRef, confessionRef } from '../config/firebase'
 import { getDocs, query, where, addDoc } from 'firebase/firestore'
 import Loadar from './Loadar'
 import { toast } from 'react-toastify';
-import { theme } from '../theme';
 import { useSelector } from 'react-redux'
 
 
