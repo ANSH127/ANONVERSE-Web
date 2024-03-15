@@ -47,7 +47,7 @@ export default function SignInScreen() {
     }
   }
   return (
-      <div className='gap-4 col-span-2 h-full shadow-lg mr-5'>
+      <div className=' w-full gap-4 col-span-2 h-full shadow-lg mr-5'>
         <div className=' overflow-y-auto overflow-x-hidden'
           style={{
             scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',

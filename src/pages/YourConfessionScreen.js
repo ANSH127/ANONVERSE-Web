@@ -56,7 +56,7 @@ export default function YourConfessionScreen() {
 
 
   return (
-    <div className='gap-4 col-span-2 h-full shadow-lg'>
+    <div className='w-full gap-4 col-span-2 h-full shadow-lg'>
       {/* // main content */}
       {
 

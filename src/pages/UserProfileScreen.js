@@ -52,7 +52,7 @@ export default function UserProfileScreen() {
     }, [uid])
     return (
 
-        <div className='gap-4 col-span-2 h-full shadow-lg w-full mr-5'>
+        <div className=' gap-4 col-span-2 h-full shadow-lg w-full mr-5'>
             {/* // main content */}
             {<div className=' '>
 
