@@ -10,7 +10,7 @@ import { setTheme } from '../redux/slices/user';
 
 export default function Header() {
     const navigate = useNavigate();
-    const [mode, setMode] = useState('light')
+    const [mode, setMode] = useState('dark')
     const dispatch = useDispatch()
 
     // add a function to toggle between light and dark mode

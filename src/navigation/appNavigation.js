@@ -49,7 +49,7 @@ export default function AppNavigation() {
         <SearchSection />
         <TrendingCards />
       </div>
-      <ToastContainer  />
+      <ToastContainer theme={`${mode?'dark':'light'}`}  />
     </div>
   </Router>
   )

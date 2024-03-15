@@ -8,7 +8,7 @@ const initialState = {
     user: null,
     avtar: null,
     AvtarList: [],
-    theme:0
+    theme:1
 }
 
 export const userSlice = createSlice({
