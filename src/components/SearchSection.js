@@ -6,6 +6,7 @@ import { getDocs } from 'firebase/firestore'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { theme } from '../theme';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -21,6 +22,8 @@ const imageList = [
 ]
 
 export default function SearchSection() {
+    const navigate = useNavigate()
+    
     const avatarlist = useSelector(state => state.user.AvtarList)
     const [userlist, setUserList] = React.useState([])
     const [searchlist, setSearchList] = React.useState([])
@@ -28,6 +31,10 @@ export default function SearchSection() {
 
     const fetchAllUsers = async () => {
         try {
+            if (localStorage.getItem('user') === null) {
+                navigate('/login')
+                return
+            }
             let uid = JSON.parse(localStorage.getItem('user')).uid
             if (uid === null) return
 
