@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import Loadar from '../components/Loadar';
-import { auth,usersRef } from '../config/firebase'
-import { signInWithEmailAndPassword, getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { auth, usersRef } from '../config/firebase'
+import { signInWithEmailAndPassword, getAuth, signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from 'firebase/auth'
 import { addDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { theme } from '../theme';
@@ -54,10 +54,10 @@ export default function SignInScreen() {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user
-        // console.log(user);
-        // only add user to firestore if user is new
+        const { isNewUser } = getAdditionalUserInfo(result);
 
-        if (user.metadata.creationTime === user.metadata.lastSignInTime) {
+
+        if (isNewUser) {
           addDoc(usersRef, {
             name: user.displayName,
             email: user.email,
