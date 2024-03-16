@@ -75,7 +75,7 @@ export default function SignUpScreen() {
                     })
                 }
                 localStorage.setItem('user', JSON.stringify(user))
-                toast.success('User created successfully')
+                toast.success('Logged in successfully')
                 window.location.href = '/'
 
             })

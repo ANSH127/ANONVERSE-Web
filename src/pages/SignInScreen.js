@@ -67,7 +67,7 @@ export default function SignInScreen() {
           })
         }
         localStorage.setItem('user', JSON.stringify(user))
-        toast.success('User created successfully')
+        toast.success('Logged in successfully')
         window.location.href = '/'
 
       })
@@ -83,7 +83,7 @@ export default function SignInScreen() {
     <div className=' w-full gap-4 col-span-2 h-full shadow-lg mr-5'>
       <div className=' overflow-y-auto overflow-x-hidden'
         style={{
-          scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px',
+          scrollbarWidth: 'none', height: '100vh', paddingBottom: '250px',
         }}>
 
         <div className="flex justify-center">
