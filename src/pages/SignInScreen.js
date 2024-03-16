@@ -48,36 +48,33 @@ export default function SignInScreen() {
       }
     }
   }
-  const handleGoogleAuth = () => {
+  const handleGoogleAuth = async () => {
     const auth = getAuth()
-    setLoading(true)
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const user = result.user
-        const { isNewUser } = getAdditionalUserInfo(result);
-
-
-        if (isNewUser) {
-          addDoc(usersRef, {
-            name: user.displayName,
-            email: user.email,
-            uid: user.uid,
-            createdAt: new Date().toISOString(),
-            avatar: 0
-          })
-        }
-        localStorage.setItem('user', JSON.stringify(user))
-        toast.success('Logged in successfully')
-        window.location.href = '/'
-
-      })
-      .catch((error) => {
-        console.log(error)
-        toast.error('Error signing up')
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    try {
+      setLoading(true)
+      const result = await signInWithPopup(auth, provider)
+      const user = result.user
+      const {isNewUser} = getAdditionalUserInfo(result)
+      if (isNewUser) {
+        await addDoc(usersRef, {
+          name: user.displayName,
+          email: user.email,
+          uid: user.uid,
+          createdAt: new Date().toISOString(),
+          avatar: 0
+        })
+      }
+      localStorage.setItem('user', JSON.stringify(user))
+      toast.success('Login successfull')
+      window.location.href = '/'
+    } catch (error) {
+      console.log(error)
+      toast.error('Error signing in')
+    }
+    finally {
+      setLoading(false)
+    }
+    
   }
   return (
     <div className=' w-full gap-4 col-span-2 h-full shadow-lg mr-5'>
