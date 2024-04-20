@@ -56,7 +56,8 @@ export default function AddConfessionForm() {
                 comments: [],
                 likedby: [],
                 reportedBy: [],
-                image: imageurl ? imageurl : null
+                image: imageurl ? imageurl : null,
+                imageSlug: imageurl ? imageUpload.name : null
             })
 
             if (doc) {

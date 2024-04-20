@@ -3,7 +3,7 @@ import { HeartIcon, FlagIcon, ChatBubbleBottomCenterIcon, TrashIcon } from '@her
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { formatDistance } from 'date-fns'
 
-import { confessionRef } from '../config/firebase'
+import { confessionRef,storage } from '../config/firebase'
 import { updateDoc, doc, deleteDoc } from 'firebase/firestore'
 
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,9 @@ import { toast } from 'react-toastify'
 import { theme } from '../theme';
 
 import { useSelector } from 'react-redux'
+
+import {ref, deleteObject } from "firebase/storage";
+
 
 export default function Card({ data, avatarName, deleteConfession }) {
   const mode = useSelector(state => state.user.theme);
@@ -103,6 +106,12 @@ export default function Card({ data, avatarName, deleteConfession }) {
       if (uid === data.uid) {
         // use window.confirm to ask user to confirm the delete
         if (window.confirm('Are you sure you want to delete this confession?')) {
+
+          if (data.image && data.imageSlug) {
+            const storageRef = ref(storage, `images/${data.imageSlug}`)
+            await deleteObject(storageRef)
+          }
+
           await deleteDoc(doc(confessionRef, docid));
           toast.success('Confession deleted successfully')
           navigate('/');
