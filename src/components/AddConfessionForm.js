@@ -1,21 +1,27 @@
 import React from 'react'
 
-import { usersRef, confessionRef } from '../config/firebase'
+import { usersRef, confessionRef, storage } from '../config/firebase'
 import { getDocs, query, where, addDoc } from 'firebase/firestore'
 import Loadar from './Loadar'
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
 
 export default function AddConfessionForm() {
     const [name, setName] = React.useState('Profile Name')
     const [confession, setConfession] = React.useState('')
+    const [imageUpload, setImageUpload] = React.useState(null)
     const [loading, setLoading] = React.useState(false)
-    const mode=useSelector(state=>state.user.theme)
+    const mode = useSelector(state => state.user.theme)
 
     const handleSubmit = async (e) => {
         if (confession === '') {
             toast.error('Confession cannot be empty')
+            return
+        }
+        if (imageUpload?.size > 5000000) {
+            toast.error('Image size should be less than 5MB')
             return
         }
         e.preventDefault()
@@ -25,8 +31,16 @@ export default function AddConfessionForm() {
             return
         }
         let Username = name;
+        var imageurl = null
+
         try {
             setLoading(true)
+            if (imageUpload) {
+                const storageRef = ref(storage, `images/${imageUpload.name}`)
+                const snapshot = await uploadBytes(storageRef, imageUpload)
+                imageurl = await getDownloadURL(snapshot.ref)
+
+            }
             if (name === 'Profile Name') {
                 const userRef = await getDocs(query(usersRef, where('uid', '==', uid)))
                 userRef.forEach((doc) => {
@@ -41,12 +55,14 @@ export default function AddConfessionForm() {
                 likes: 0,
                 comments: [],
                 likedby: [],
-                reportedBy: []
+                reportedBy: [],
+                image: imageurl ? imageurl : null
             })
 
             if (doc) {
                 toast.success('Confession submitted successfully')
                 setConfession('')
+                setImageUpload(null)
             }
 
         } catch (error) {
@@ -77,7 +93,7 @@ export default function AddConfessionForm() {
 
 
                 {/* // select name profile name or anonymous */}
-                <select className={`w-full p-4 border-2 ${mode?"bg-black":'bg-white'} border-gray-300 rounded-lg`}
+                <select className={`w-full p-4 border-2 ${mode ? "bg-black" : 'bg-white'} border-gray-300 rounded-lg`}
                     onChange={(e) => setName(e.target.value)}
                     defaultValue="Anonymous"
                 >
@@ -86,7 +102,16 @@ export default function AddConfessionForm() {
                 </select>
 
 
-                <textarea placeholder="Confession" className={`w-full p-4 border-2 ${mode?"bg-black":'bg-white'} border-gray-300 rounded-lg`} rows={4}
+
+                <input type="file" className={`w-full p-4 border-2 ${mode ? "bg-black" : 'bg-white'} border-gray-300 rounded-lg`}
+                    onChange={(e) => setImageUpload(e.target.files[0])}
+                    accept='image/png, image/jpeg'
+                    placeholder='Upload Image(Optional)'
+                />
+
+
+
+                <textarea placeholder="Confession" className={`w-full p-4 border-2 ${mode ? "bg-black" : 'bg-white'} border-gray-300 rounded-lg`} rows={4}
                     onChange={(e) => setConfession(e.target.value)}
                     value={confession}
                 />

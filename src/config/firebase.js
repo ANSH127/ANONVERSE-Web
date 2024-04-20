@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection} from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
-
+import {getStorage} from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -18,6 +18,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const usersRef =collection(db, "users");
 export const confessionRef = collection(db, 'confession');
+export const storage = getStorage(app);
 
 export default app;
 

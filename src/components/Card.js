@@ -196,7 +196,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
   return (
 
-    <div className={`shadow-lg p-4  rounded-lg mb-10 mr-5 ${mode?theme.black:theme.white} `} >
+    <div className={`shadow-lg p-4  rounded-lg mb-10 mr-5 ${mode ? theme.black : theme.white} `} >
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
           <img
@@ -241,6 +241,15 @@ export default function Card({ data, avatarName, deleteConfession }) {
         </div>
 
       </div>
+
+      {/* // image */}
+      {
+        data?.image &&
+        <div className='mt-2'>
+        <img src={data.image} alt='' className='w-full rounded-lg' />
+      </div>}
+
+      {/* // description */}
       <div className='mt-2'>
         {
           data.reportedBy.length > 5 && data.uid === JSON.parse(localStorage.getItem('user')).uid &&
@@ -292,7 +301,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
           {/* // comment box here with black border */}
           <div className='flex items-center space-x-2'>
             <textarea
-              className={`w-full border ${mode?theme.black:' border-gray-300'} rounded-lg p-2`}
+              className={`w-full border ${mode ? theme.black : ' border-gray-300'} rounded-lg p-2`}
               placeholder='Type your comment here'
               value={mesageData}
               onChange={(e) => setMessageData(e.target.value)}
@@ -312,7 +321,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
             data?.comments.map((comment, index) => {
               return (
                 (comment.reportedBy.length) < 5 &&
-                <div key={index} className={` mt-4 ${mode?theme.black:'bg-gray-100'}  p-2 rounded-lg`}>
+                <div key={index} className={` mt-4 ${mode ? theme.black : 'bg-gray-100'}  p-2 rounded-lg`}>
                   <div className='flex space-x-2  items-center'>
                     <img
                       src='./images/Avatar.jpg'
@@ -336,7 +345,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
                     {
                       comment?.uid !== JSON.parse(localStorage.getItem('user')).uid &&
-                      comment?.reportedBy.indexOf(JSON.parse(localStorage.getItem('user')).uid)=== -1 
+                      comment?.reportedBy.indexOf(JSON.parse(localStorage.getItem('user')).uid) === -1
                       &&
                       <div className='ml-auto cursor-pointer'>
                         <FlagIcon className='h-5 w-5'
