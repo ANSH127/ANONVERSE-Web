@@ -3,7 +3,7 @@ import { HeartIcon, FlagIcon, ChatBubbleBottomCenterIcon, TrashIcon } from '@her
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { formatDistance } from 'date-fns'
 
-import { confessionRef,storage } from '../config/firebase'
+import { confessionRef, storage } from '../config/firebase'
 import { updateDoc, doc, deleteDoc } from 'firebase/firestore'
 
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ import { theme } from '../theme';
 
 import { useSelector } from 'react-redux'
 
-import {ref, deleteObject } from "firebase/storage";
+import { ref, deleteObject } from "firebase/storage";
 
 
 export default function Card({ data, avatarName, deleteConfession }) {
@@ -26,6 +26,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
   const [mesageData, setMessageData] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const [loading2, setLoading2] = React.useState(false)
+  const [imageLoaded, setImageLoaded] = React.useState(false)
   const handleLike = async () => {
     try {
       setLoading(true);
@@ -255,8 +256,25 @@ export default function Card({ data, avatarName, deleteConfession }) {
       {
         data?.image &&
         <div className='mt-2'>
-        <img src={data.image} alt='' className='w-full rounded-lg' />
-      </div>}
+          <img
+            src={data.image}
+            alt=''
+            className={`w-full rounded-lg transition-all duration-500 ${imageLoaded ? '' : 'blur-md'}`}
+            onLoad={() => {
+              setImageLoaded(true);
+            }}
+
+          />
+
+          {
+            !imageLoaded &&
+            <div 
+            className='absolute inset-0 flex items-center justify-center'
+            >
+              <img src='./images/loading2.gif' alt='loading' width='50' height='50' />
+            </div>
+          }
+        </div>}
 
       {/* // description */}
       <div className='mt-2'>
