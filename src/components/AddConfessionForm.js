@@ -9,7 +9,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
 
 export default function AddConfessionForm() {
-    const [name, setName] = React.useState('Profile Name')
+    const [name, setName] = React.useState('Anonymous')
     const [confession, setConfession] = React.useState('')
     const [imageUpload, setImageUpload] = React.useState(null)
     const [loading, setLoading] = React.useState(false)
