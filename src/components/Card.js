@@ -6,7 +6,7 @@ import { formatDistance } from 'date-fns'
 import { confessionRef, storage } from '../config/firebase'
 import { updateDoc, doc, deleteDoc } from 'firebase/firestore'
 
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HeartIcon as HeartIcon2, FlagIcon as FlagIcon2 } from '@heroicons/react/24/solid'
 import { toast } from 'react-toastify'
 
@@ -209,18 +209,34 @@ export default function Card({ data, avatarName, deleteConfession }) {
     <div className={`shadow-lg p-4  rounded-lg mb-10 mr-5 ${mode ? theme.black : theme.white} `} >
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
-          <img
-            src={
-              avatarName !== null ?
-                `/images/Avatar/Avatar${avatarName + 1}.jpg`
-                :
-                '/images/sad-face.png'
-            }
-            alt='profile'
-            className='rounded-full'
-            width='50'
-            height='50'
-          />
+          {avatarName !== null && data?.name !== 'Anonymous' ?
+            <Link to={`/profile/${data?.uid}`}>
+              <img
+                src={`/images/Avatar/Avatar${avatarName + 1}.jpg`}
+                alt='profile'
+                className='rounded-full border-blue-500 shadow-lg hover:border-2'
+                width='50'
+                height='50'
+
+              />
+            </Link>
+            :
+            <img
+
+              src={
+                avatarName !== null ?
+                  `/images/Avatar/Avatar${avatarName + 1}.jpg`
+                  :
+                  '/images/sad-face.png'
+              }
+              alt='profile'
+              className='rounded-full'
+              width='50'
+              height='50'
+            />
+
+          }
+
           <div>
             <h3 className='font-bold'>
               {data?.name}
@@ -268,8 +284,8 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
           {
             !imageLoaded &&
-            <div 
-            className='absolute inset-0 flex items-center justify-center'
+            <div
+              className='absolute inset-0 flex items-center justify-center'
             >
               <img src='./images/loading2.gif' alt='loading' width='50' height='50' />
             </div>
