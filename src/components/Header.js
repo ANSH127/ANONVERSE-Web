@@ -26,7 +26,7 @@ export default function Header() {
     }
     return (
         <div className={`flex justify-between items-center p-3 shadow-sm text-2xl font-bold ${mode==='light'?theme.white:theme.black}`}>
-            <h1>AnonVerse</h1>
+            <h1>WishperWeb</h1>
             <div className='flex flex-row'>
 
                 {/* // add a toggle button to switch between light and dark mode */}
