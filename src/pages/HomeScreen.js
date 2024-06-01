@@ -101,7 +101,22 @@ export default function HomeScreen() {
       {/* // main content */}
       {
         loading ?
-          <Loadar />
+
+          // add a dummy card to show loading effect of skeleton
+          <div className=' overflow-y-auto overflow-x-hidden'
+            style={{
+              scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px'
+            }}
+          >
+
+            <Card key={0} data={{}} />
+            <Card key={1} data={{}} />
+            <Card key={2} data={{}} />
+            <Card key={3} data={{}} />
+            <Card key={4} data={{}} />
+          </div>
+
+
           :
           <div className=' overflow-y-auto overflow-x-hidden'
           >
@@ -127,6 +142,7 @@ export default function HomeScreen() {
                       <Card key={index} data={data}
                         avatarName={avatarlist.filter((item) => item.uid === data.uid)[0].avatar}
                       />
+
                     ))
                   }
 

@@ -16,12 +16,14 @@ import { useSelector } from 'react-redux'
 
 import { ref, deleteObject } from "firebase/storage";
 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function Card({ data, avatarName, deleteConfession }) {
   const mode = useSelector(state => state.user.theme);
   // console.log(data);
   const navigate = useNavigate()
-  const [liked, setLiked] = React.useState(data?.likedby.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ? true : false)
+  const [liked, setLiked] = React.useState(data?.likedby?.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ? true : false)
   const [message, setMessage] = React.useState(false)
   const [mesageData, setMessageData] = React.useState('')
   const [loading, setLoading] = React.useState(false)
@@ -32,7 +34,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
       setLoading(true);
       let docid = data.id;
       let uid = JSON.parse(localStorage.getItem('user')).uid;
-      if (!liked && data.likedby.indexOf(uid) === -1) {
+      if (!liked && data?.likedby?.indexOf(uid) === -1) {
 
         await updateDoc(doc(confessionRef, docid), {
           likes: data.likes + 1,
@@ -42,7 +44,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
         data.likedby.push(uid);
       }
       else {
-        let index = data.likedby.indexOf(uid);
+        let index = data?.likedby?.indexOf(uid);
         data.likedby.splice(index, 1);
         await updateDoc(doc(confessionRef, docid), {
           likes: data.likes - 1,
@@ -65,7 +67,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
   }
 
   const handleComment = async () => {
-    if (mesageData.length < 3) {
+    if (mesageData?.length < 3) {
       toast.warning('Comment should be atleast 3 characters long')
       return;
     }
@@ -130,7 +132,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
     let uid = JSON.parse(localStorage.getItem('user')).uid;
     let docid = data.id;
     try {
-      if (data.reportedBy.indexOf(uid) === -1) {
+      if (data?.reportedBy?.indexOf(uid) === -1) {
         if (window.confirm('Are you sure you want to report this post?')) {
           updateDoc(doc(confessionRef, docid), {
             reportedBy: [...data.reportedBy, uid]
@@ -157,7 +159,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
     try {
       if (uid === obj.uid) {
         if (window.confirm('Are you sure you want to delete this comment?')) {
-          let index = data.comments.indexOf(obj);
+          let index = data?.comments?.indexOf(obj);
           data.comments.splice(index, 1);
           await updateDoc(doc(confessionRef, docid), {
             comments: data.comments
@@ -182,9 +184,9 @@ export default function Card({ data, avatarName, deleteConfession }) {
     let uid = JSON.parse(localStorage.getItem('user')).uid;
     try {
       if (window.confirm('Are you sure you want to report this comment?')) {
-        let index = data.comments.indexOf(obj);
+        let index = data?.comments?.indexOf(obj);
         data.comments[index].reportedBy = data.comments[index].reportedBy || [];
-        if (data.comments[index].reportedBy.indexOf(uid) === -1) {
+        if (data?.comments[index]?.reportedBy?.indexOf(uid) === -1) {
           data.comments[index].reportedBy.push(uid);
           await updateDoc(doc(confessionRef, docid), {
             comments: data.comments
@@ -209,17 +211,26 @@ export default function Card({ data, avatarName, deleteConfession }) {
     <div className={`shadow-lg p-4  rounded-lg mb-10 mr-5 ${mode ? theme.black : theme.white} `} >
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
-          {avatarName !== null && data?.name !== 'Anonymous' ?
-            <Link to={`/profile/${data?.uid}`}>
-              <img
-                src={`/images/Avatar/Avatar${avatarName + 1}.jpg`}
-                alt='profile'
-                className='rounded-full border-blue-500 shadow-lg hover:border-2'
-                width='50'
-                height='50'
 
-              />
-            </Link>
+
+
+          {avatarName !== null && data?.name !== 'Anonymous' ?
+            (
+              data?.name ?
+                <Link to={`/profile/${data?.uid}`}>
+                  <img
+                    src={`/images/Avatar/Avatar${avatarName + 1}.jpg`}
+                    alt='profile'
+                    className='rounded-full border-blue-500 shadow-lg hover:border-2'
+                    width='50'
+                    height='50'
+
+                  />
+                </Link>
+                :
+                <Skeleton width={50} height={50} borderRadius={1} count={1} duration={2} circle={true} />
+
+            )
             :
             <img
 
@@ -239,11 +250,18 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
           <div>
             <h3 className='font-bold'>
-              {data?.name}
+              {
+                data?.name ||
+                <Skeleton width={100} height={20} count={1} duration={2} />
+              }
             </h3>
             {/* time */}
             <p className='text-gray-500 text-xs'>
-              {formatDistance(new Date(data?.createdAt), new Date(), { addSuffix: true })}
+              {
+                data?.createdAt ?
+                  formatDistance(new Date(data?.createdAt), new Date(), { addSuffix: true })
+                  : <Skeleton width={100} height={15} count={1} duration={2} />
+              }
 
             </p>
           </div>
@@ -258,10 +276,17 @@ export default function Card({ data, avatarName, deleteConfession }) {
           {
             data?.uid !== JSON.parse(localStorage.getItem('user')).uid &&
             <div>
-              {data?.reportedBy.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ?
-                <FlagIcon2 className='h-8 w-8 text-red-600' />
-                :
-                <FlagIcon className='h-8 w-8' onClick={handleReport} />}
+
+              {
+                data?.createdAt ?
+
+                  data?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ?
+                    <FlagIcon2 className='h-8 w-8 text-red-600' />
+                    :
+                    <FlagIcon className='h-8 w-8' onClick={handleReport} />
+                  :
+                  <Skeleton width={60} height={30} count={1} duration={2} />
+              }
             </div>
           }
         </div>
@@ -295,14 +320,17 @@ export default function Card({ data, avatarName, deleteConfession }) {
       {/* // description */}
       <div className='mt-2'>
         {
-          data.reportedBy.length > 5 && data.uid === JSON.parse(localStorage.getItem('user')).uid &&
+          data?.reportedBy?.length > 5 && data.uid === JSON.parse(localStorage.getItem('user')).uid &&
           <p className='text-red-500 font-semibold'>
             This post has been reported by many users and may be not visible to others.
           </p>
 
         }
         <p className=''>
-          {data?.description}
+          {
+            data?.description ||
+            <Skeleton height={20} count={4} duration={2} />
+          }
         </p>
 
         {/* // read more gray color text */}
@@ -317,24 +345,41 @@ export default function Card({ data, avatarName, deleteConfession }) {
             :
             <div>
               {
-                liked || data?.likedby.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ?
-                  <HeartIcon2 className='h-8 w-8 text-red-500 cursor-pointer'
-                    onClick={handleLike} />
+                data?.createdAt ?
+
+                  (liked || data?.likedby?.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ?
+                    <HeartIcon2 className='h-8 w-8 text-red-500 cursor-pointer'
+                      onClick={handleLike} />
+                    :
+                    <HeartIcon className='h-8 w-8 text-red-500 cursor-pointer'
+                      onClick={handleLike}
+                    />)
                   :
-                  <HeartIcon className='h-8 w-8 text-red-500 cursor-pointer'
-                    onClick={handleLike}
-                  />
+                  <Skeleton width={60} height={30} count={1} duration={2} />
               }
             </div>
           }
           {/* // like count */}
-          <p className='text-gray-500'>
-            {data?.likes} likes</p>
-          <ChatBubbleBottomCenterIcon className='h-8 w-8 cursor-pointer'
-            onClick={() => setMessage(!message)}
-          />
-          {/* // comment count */}
-          <p className='text-gray-500'>{data?.comments.length}  comments</p>
+          {
+            data?.createdAt &&
+            <p className='text-gray-500'>{data?.likes} likes</p>}
+          {
+            data?.createdAt ?
+
+              (
+                <>
+                  <ChatBubbleBottomCenterIcon className='h-8 w-8 cursor-pointer'
+                    onClick={() => setMessage(!message)}
+
+                  />
+
+                  {/* // comment count */}
+                  <p className='text-gray-500'>{data?.comments?.length}  comments</p>
+                </>)
+              :
+              <Skeleton width={60} height={30} count={1} duration={2} />
+
+          }
         </div>
       </div>
 
@@ -363,7 +408,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
           {
             data?.comments.map((comment, index) => {
               return (
-                (comment.reportedBy.length) < 5 &&
+                (comment?.reportedBy?.length) < 5 &&
                 <div key={index} className={` mt-4 ${mode ? theme.black : 'bg-gray-100'}  p-2 rounded-lg`}>
                   <div className='flex space-x-2  items-center'>
                     <img
@@ -388,7 +433,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
                     {
                       comment?.uid !== JSON.parse(localStorage.getItem('user')).uid &&
-                      comment?.reportedBy.indexOf(JSON.parse(localStorage.getItem('user')).uid) === -1
+                      comment?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user')).uid) === -1
                       &&
                       <div className='ml-auto cursor-pointer'>
                         <FlagIcon className='h-5 w-5'

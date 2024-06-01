@@ -5,7 +5,7 @@ import { getDocs, where, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify'
-import Loadar from '../components/Loadar';
+// import Loadar from '../components/Loadar';
 
 
 
@@ -61,8 +61,19 @@ export default function YourConfessionScreen() {
       {
 
         loading ?
-        <Loadar />
-         :
+          <div className=' overflow-y-auto overflow-x-hidden'
+            style={{
+              scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px'
+            }}
+          >
+
+            <Card key={0} data={{}} />
+            <Card key={1} data={{}} />
+            <Card key={2} data={{}} />
+            <Card key={3} data={{}} />
+            <Card key={4} data={{}} />
+          </div>
+          :
 
           <div className=' overflow-y-auto overflow-x-hidden'
             style={{
