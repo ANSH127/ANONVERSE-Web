@@ -4,11 +4,14 @@ import { usersRef, confessionRef } from '../config/firebase'
 import { getDocs, where, query, orderBy } from 'firebase/firestore'
 import Card from '../components/Card'
 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 export default function UserProfileScreen() {
     const { uid } = useParams()
 
     const [userData, setUserData] = React.useState({})
     const [confessions, setConfessions] = React.useState([])
+    const [loading, setLoading] = React.useState(true)
 
     const fetchUserDetails = async () => {
         try {
@@ -41,6 +44,9 @@ export default function UserProfileScreen() {
         } catch (error) {
             console.error("Error getting documents: ", error);
         }
+        finally {
+            setLoading(false)
+        }
     }
 
 
@@ -58,20 +64,25 @@ export default function UserProfileScreen() {
 
                 {/* // user profile */}
                 <div className='items-center justify-center flex flex-col py-4'>
-                    <img
-                        src={`/images/Avatar/Avatar${userData.avatar + 1}.jpg`}
+
+                    {
+                        userData.avatar === undefined ?
+                            <Skeleton circle={true} height={150} width={150} />
+                            :
+                            <img
+                                src={`/images/Avatar/Avatar${userData.avatar + 1}.jpg`}
 
 
-                        alt='profile'
-                        className='rounded-full hover:border-2 border-blue-500'
+                                alt='profile'
+                                className='rounded-full hover:border-2 border-blue-500'
 
-                        width='150'
-                        height='150'
+                                width='150'
+                                height='150'
 
-                    />
+                            />}
 
                     <h1 className='text-2xl py-2 font-bold'>
-                        {userData.name}
+                        {userData.name || <Skeleton width={100} />}
 
                     </h1>
                 </div>
@@ -85,8 +96,8 @@ export default function UserProfileScreen() {
                 style={{
                     scrollbarWidth: 'thin', height: '100vh', paddingBottom: '300px',
                     scrollbarColor: '#137de7 #F4F4F4',
-                    
-                    
+
+
                 }}>
 
                 <h1 className='text-xl font-semibold m-4  underline'>
@@ -104,9 +115,17 @@ export default function UserProfileScreen() {
                             )
                         })
                         :
-                        <h1 className='text-xl font-semibold text-center m-4 '>
-                            No Confessions Found
-                        </h1>
+                        !loading ?
+                            <h1 className='text-xl font-semibold text-center m-4 '>
+                                No Confessions Found
+                            </h1>
+                            :
+                            <div >
+
+                                <Card key={0} data={{}} />
+                                <Card key={1} data={{}} />
+                                <Card key={2} data={{}} />
+                            </div>
 
                 }
             </div>
