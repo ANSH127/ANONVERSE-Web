@@ -6,6 +6,8 @@ import { formatDistance } from 'date-fns'
 import { useSelector } from 'react-redux';
 import { theme } from '../theme';
 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 const imageList = [
@@ -23,7 +25,8 @@ export default function TrendingCards() {
     const avatarlist = useSelector(state => state.user.AvtarList);
     const navigate = useNavigate()
     const [confessions, setConfessions] = React.useState([])
-    const mode=useSelector(state=>state.user.theme)
+    const mode = useSelector(state => state.user.theme)
+    const [loading, setLoading] = React.useState(true)
 
     const fetchConfessions = async () => {
         try {
@@ -46,6 +49,9 @@ export default function TrendingCards() {
 
 
         }
+        finally {
+            setLoading(false)
+        }
     }
 
     React.useEffect(() => {
@@ -58,7 +64,7 @@ export default function TrendingCards() {
 
     return (
 
-        <div className={`shadow-lg p-4 my-4 h-full ${mode?theme.black:theme.white} rounded-lg`}>
+        <div className={`shadow-lg p-4 my-4 h-full ${mode ? theme.black : theme.white} rounded-lg`}>
 
             {/* // trending confesssions */}
 
@@ -74,8 +80,19 @@ export default function TrendingCards() {
                 }}>
 
                 {
+                    loading && (
+                        <div className='flex flex-col space-y-2'>
+                            <Skeleton height={50} />
+                            <Skeleton height={50} />
+                            <Skeleton height={50} />
+                            <Skeleton height={50} />
+                        </div>
+                    )
+                }
+
+                {
                     confessions?.map((confession, index) => (
-                        <div key={index} className={`shadow-lg ${mode?theme.black:theme.white} rounded-lg mb-5`}>
+                        <div key={index} className={`shadow-lg ${mode ? theme.black : theme.white} rounded-lg mb-5`}>
                             <div className='flex items-center justify-between'>
                                 <div className='flex items-center space-x-2'>
                                     <img
@@ -112,7 +129,7 @@ export default function TrendingCards() {
 
                 }
                 {
-                    confessions.length === 0 && (
+                    confessions.length === 0 && !loading && (
                         <div className='flex items-center justify-center h-80'>
                             <p className='text-gray-500'>No Confessions</p>
                         </div>

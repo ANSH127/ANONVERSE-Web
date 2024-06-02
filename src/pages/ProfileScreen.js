@@ -11,6 +11,9 @@ import { toast } from 'react-toastify';
 
 import { theme } from '../theme';
 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 export default function ProfileScreen() {
   const mode=useSelector(state=>state.user.theme)
   const navigate = useNavigate()
@@ -104,7 +107,7 @@ export default function ProfileScreen() {
             >Change Avatar</p>
 
             <h1 className='text-2xl py-2 font-bold'>
-              {userData.name}
+              {userData.name || <Skeleton width={100} />}
             </h1>
           </div>
           {/* // email address */}

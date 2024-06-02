@@ -9,6 +9,8 @@ import { theme } from '../theme';
 import { useNavigate } from 'react-router-dom';
 
 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const imageList = [
 
@@ -23,11 +25,12 @@ const imageList = [
 
 export default function SearchSection() {
     const navigate = useNavigate()
-    
+
     const avatarlist = useSelector(state => state.user.AvtarList)
     const [userlist, setUserList] = React.useState([])
     const [searchlist, setSearchList] = React.useState([])
-    const mode=useSelector(state=>state.user.theme)
+    const mode = useSelector(state => state.user.theme)
+    const [loading, setLoading] = React.useState(true)
 
     const fetchAllUsers = async () => {
         try {
@@ -48,6 +51,9 @@ export default function SearchSection() {
 
         } catch (error) {
             console.error("Error getting documents: ", error);
+        }
+        finally {
+            setLoading(false)
         }
 
     }
@@ -80,10 +86,10 @@ export default function SearchSection() {
 
 
     return (
-        <div className={`shadow-lg p-4 my-2 ${mode?theme.black:theme.white}  rounded-lg`}>
+        <div className={`shadow-lg p-4 my-2 ${mode ? theme.black : theme.white}  rounded-lg`}>
             {/* // search card */}
             <div className='flex justify-center'>
-                <div className={`flex items-center  rounded-lg p-2 w-full ${mode?'bg-black':'bg-gray-100'}`}>
+                <div className={`flex items-center  rounded-lg p-2 w-full ${mode ? 'bg-black' : 'bg-gray-100'}`}>
                     <MagnifyingGlassIcon className='h-5 w-5 text-gray-500' />
                     <input type='text' placeholder='Search' className={`bg-transparent  outline-none mb-1`}
                         onChange={(e) => searchUser(e.target.value)}
@@ -102,12 +108,22 @@ export default function SearchSection() {
 
                     }}>
 
+                    {
+                        loading && (
+                            <div className='flex flex-col space-y-2'>
+                                <Skeleton height={30} />
+                                <Skeleton height={30} />
+                            </div>
+                        )
+                    }
+
                     {/* // user profile box with name and image */}
+
                     {
                         searchlist?.map((user, index) => {
                             return (
                                 <Link to={`/profile/${user.uid}`} key={index}>
-                                    <div key={index} className={`flex items-center justify-between ${mode?'bg-black':'bg-gray-100'}  shadow-lg p-2 mb-1 rounded-lg`}>
+                                    <div key={index} className={`flex items-center justify-between ${mode ? 'bg-black' : 'bg-gray-100'}  shadow-lg p-2 mb-1 rounded-lg`}>
                                         <div className='flex items-center gap-2'>
                                             <img
                                                 src={
@@ -126,7 +142,7 @@ export default function SearchSection() {
                     }
                     {
 
-                        searchlist.length === 0 && (
+                        searchlist.length === 0 && !loading && (
                             <div className='flex items-center justify-center h-full'>
                                 <p className='text-gray-500'>
                                     No results found
