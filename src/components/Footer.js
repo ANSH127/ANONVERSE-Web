@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="container mx-auto text-center">
         <p className="text-sm">
           &copy; {new Date().getFullYear()} Designed by{" "}
-          <a href="https://anshdev.vercel.app/" 
+          <a href="https://anshdev.vercel.app/" target="_blank" rel="noreferrer"
           className="hover:underline text-blue-500
 
           ">
