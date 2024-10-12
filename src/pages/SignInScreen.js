@@ -7,6 +7,7 @@ import { addDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { theme } from '../theme';
 import { useSelector } from 'react-redux'
+import Footer from '../components/Footer';
 
 export default function SignInScreen() {
   const provider = new GoogleAuthProvider()
@@ -54,7 +55,7 @@ export default function SignInScreen() {
       setLoading(true)
       const result = await signInWithPopup(auth, provider)
       const user = result.user
-      const {isNewUser} = getAdditionalUserInfo(result)
+      const { isNewUser } = getAdditionalUserInfo(result)
       if (isNewUser) {
         await addDoc(usersRef, {
           name: user.displayName,
@@ -74,7 +75,7 @@ export default function SignInScreen() {
     finally {
       setLoading(false)
     }
-    
+
   }
   return (
     <div className=' w-full gap-4 col-span-2 h-full shadow-lg mr-5'>
@@ -120,6 +121,8 @@ export default function SignInScreen() {
 
 
 
+
+        <Footer />
 
       </div>
 

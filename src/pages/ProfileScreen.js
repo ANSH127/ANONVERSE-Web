@@ -13,6 +13,7 @@ import { theme } from '../theme';
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import Footer from '../components/Footer'
 
 export default function ProfileScreen() {
   const mode=useSelector(state=>state.user.theme)
@@ -237,6 +238,8 @@ export default function ProfileScreen() {
           </div>
 
         }
+
+        <Footer />
 
       </div>
     

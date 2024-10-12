@@ -6,6 +6,7 @@ import Loadar from './Loadar'
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import Footer from './Footer';
 
 
 export default function AddConfessionForm() {
@@ -126,6 +127,7 @@ export default function AddConfessionForm() {
                         >Submit</button>
                 }
             </div>
+            <Footer />
 
 
 

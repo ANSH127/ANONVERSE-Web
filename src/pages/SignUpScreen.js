@@ -7,6 +7,7 @@ import { addDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { theme } from '../theme';
 import { useSelector } from 'react-redux'
+import Footer from '../components/Footer';
 
 
 
@@ -131,6 +132,7 @@ export default function SignUpScreen() {
 
 
 
+            <Footer />
 
             </div>
 
