@@ -307,14 +307,14 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
           />
 
-          {
+          {/* {
             !imageLoaded &&
             <div
               className='absolute inset-0 flex items-center justify-center'
             >
               <img src='./images/loading2.gif' alt='loading' width='50' height='50' />
             </div>
-          }
+          } */}
         </div>}
 
       {/* // description */}
