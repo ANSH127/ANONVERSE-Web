@@ -304,17 +304,20 @@ export default function Card({ data, avatarName, deleteConfession }) {
             onLoad={() => {
               setImageLoaded(true);
             }}
+            onError={() => setImageLoaded(false)}
+
 
           />
-
-          {/* {
+          {
             !imageLoaded &&
-            <div
-              className='absolute inset-0 flex items-center justify-center'
-            >
-              <img src='./images/loading2.gif' alt='loading' width='50' height='50' />
+            <div className='mt-2'>
+              <img
+                src='/images/blur-img.jpg' 
+                alt='placeholder'
+                className='w-full rounded-lg transition-all duration-500'
+              />
             </div>
-          } */}
+          }
         </div>}
 
       {/* // description */}
