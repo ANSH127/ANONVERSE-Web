@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { usersRef, confessionRef, storage } from '../config/firebase'
-import { getDocs, query, where, addDoc } from 'firebase/firestore'
+// import { usersRef, confessionRef, storage } from '../config/firebase'
+// import { getDocs, query, where, addDoc } from 'firebase/firestore'
 import Loadar from './Loadar'
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+// import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import Footer from './Footer';
-
+import axios from 'axios';
 
 export default function AddConfessionForm() {
     const [name, setName] = React.useState('Anonymous')
@@ -26,45 +26,35 @@ export default function AddConfessionForm() {
             return
         }
         e.preventDefault()
-        let uid = JSON.parse(localStorage.getItem('user'))?.uid
-        if (!uid) {
-            toast.error('Please login to submit confession')
-            return
-        }
-        let Username = name;
-        var imageurl = null
+        try{
 
-        try {
+            if(!localStorage.getItem('token')){
+                toast.error('Please login to submit confession')
+                return
+            }
+
             setLoading(true)
-            if (imageUpload) {
-                const storageRef = ref(storage, `images/${imageUpload.name}`)
-                const snapshot = await uploadBytes(storageRef, imageUpload)
-                imageurl = await getDownloadURL(snapshot.ref)
-
-            }
-            if (name === 'Profile Name') {
-                const userRef = await getDocs(query(usersRef, where('uid', '==', uid)))
-                userRef.forEach((doc) => {
-                    Username = doc.data().name
-                })
-            }
-            const doc = await addDoc(confessionRef, {
-                name: Username,
+            
+            const response= await axios.post('http://localhost:4000/api/addconfession', {
+                name: name,
                 description: confession,
-                uid,
-                createdAt: new Date().toISOString(),
-                likes: 0,
                 comments: [],
+                likes: 0,
                 likedby: [],
-                reportedBy: [],
-                image: imageurl ? imageurl : null,
-                imageSlug: imageurl ? imageUpload.name : null
-            })
+                reportedby: [],
 
-            if (doc) {
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            if (response.status === 201) {
                 toast.success('Confession submitted successfully')
                 setConfession('')
                 setImageUpload(null)
+            } else {
+                toast.error('Error submitting confession')
             }
 
         } catch (error) {
