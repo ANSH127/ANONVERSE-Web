@@ -1,11 +1,10 @@
 import React from 'react'
 import Card from '../components/Card';
-// import { confessionRef } from '../config/firebase';
-// import { getDocs, where, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify'
-// import Loadar from '../components/Loadar';
+import Loadar from '../components/Loadar';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
 
 
@@ -15,6 +14,8 @@ export default function YourConfessionScreen() {
   const [confessions, setConfessions] = React.useState([])
   const [loading, setLoading] = React.useState(false)
   const navigate = useNavigate()
+  const [hasMore, setHasMore] = React.useState(true)
+
 
 
   const fetchConfessions = async () => {
@@ -25,18 +26,8 @@ export default function YourConfessionScreen() {
         navigate('/login')
         return
       }
-      // let uid = JSON.parse(localStorage.getItem('user')).uid
-      // const q = query(confessionRef, where('uid', '==', uid), orderBy('createdAt', 'desc'))
 
-      // const docSnap = await getDocs(q);
-      // let data = []
-      // docSnap.forEach((doc) => {
-      //   data.push({ ...doc.data(), id: doc.id })
-      // });
-      // setConfessions(data)
-      // console.log(data)
-
-      const response = await axios.get('http://localhost:4000/api/userconfessions', {
+      const response = await axios.get('http://localhost:4000/api/userconfessions?start=0&end=5', {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -53,6 +44,37 @@ export default function YourConfessionScreen() {
       toast.error('Error fetching confessions')
 
 
+    }
+    finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchMoreConfessions = async () => {
+    try {
+
+      const start = confessions?.length;
+      const end = start + 5;
+      const response = await axios.get(`http://localhost:4000/api/userconfessions?start=${start}&end=${end}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 200) {
+        const data = response.data;
+        setConfessions(prev => [...prev, ...data]);
+        if (data?.length < 5) {
+          setHasMore(false)
+          toast.info('No more confessions to load')
+        }
+      } else {
+        toast.error('Error fetching confessions')
+      }
+
+    } catch (error) {
+      console.error("Error getting documents: ", error);
+      toast.error('Error fetching confessions')
     }
     finally {
       setLoading(false)
@@ -96,14 +118,28 @@ export default function YourConfessionScreen() {
             </h1>
             {
               confessions.length > 0 ?
+                <InfiniteScroll
+                  dataLength={confessions?.length}
+                  next={fetchMoreConfessions}
+                  hasMore={hasMore}
 
-                confessions.map((data, index) => {
-                  return (
-                    <Card key={index} data={data}
-                      deleteConfession={true}
-                    />
-                  )
-                })
+                  loader={
+                    <Loadar />
+                  }
+                  height={'100vh'}
+                  style={{
+                    scrollbarWidth: 'none', height: '100vh', paddingBottom: '200px'
+                  }}
+                >
+
+                  {confessions.map((data, index) => {
+                    return (
+                      <Card key={index} data={data}
+                        deleteConfession={true}
+                      />
+                    )
+                  })}
+                </InfiniteScroll>
                 :
                 <h1 className='text-3xl font-semibold text-center mt-4 mb-4'>
                   No Confessions Found

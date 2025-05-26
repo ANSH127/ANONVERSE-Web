@@ -24,7 +24,13 @@ const getAllConfessionsWithRange = async (req, res) => {
 
 const getUserConfessions = async (req, res) => {
     try {
-        const confessions = await Confession.find({ uid: req.user._id }).populate('uid','avatar');
+        let {start=0,end=5} = req.query;
+        start = parseInt(start);
+        end = parseInt(end);
+        const limit = end - start;
+
+        const confessions = await Confession.find({ uid: req.user._id }).populate('uid','avatar').sort({ createdAt: -1 }).skip(start).limit(limit);
+        
         res.status(200).json(confessions);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
