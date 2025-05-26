@@ -2,25 +2,16 @@ import React from 'react'
 import { HeartIcon, FlagIcon, ChatBubbleBottomCenterIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { formatDistance } from 'date-fns'
-
-import { confessionRef, storage } from '../config/firebase'
-import { updateDoc, doc, deleteDoc } from 'firebase/firestore'
-
 import { Link, useNavigate } from 'react-router-dom';
 import { HeartIcon as HeartIcon2, FlagIcon as FlagIcon2 } from '@heroicons/react/24/solid'
 import { toast } from 'react-toastify'
-
 import { theme } from '../theme';
-
 import { useSelector } from 'react-redux'
-
-import { ref, deleteObject } from "firebase/storage";
-
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import axios from 'axios';
 
-export default function Card({ data, avatarName, deleteConfession }) {
+export default function Card({ data, deleteConfession }) {
   const mode = useSelector(state => state.user.theme);
   // console.log(data);
   const navigate = useNavigate()
@@ -74,7 +65,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
           reportedBy: []
 
         }
-        
+
         const response = await axios.patch(`http://localhost:4000/api/addcomment/${docid}`, newComment, {
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +85,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
       } catch (error) {
         toast.error('Error commenting on confession')
         console.log(error);
-        
+
 
       }
       finally {
@@ -187,19 +178,35 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
 
   const handleDeleteComment = async (obj) => {
-    let docid = data.id;
-    let uid = JSON.parse(localStorage.getItem('user')).uid;
+    let docid = data._id;
+    let uid = JSON.parse(localStorage.getItem('user'))._id;
     try {
       if (uid === obj.uid) {
         if (window.confirm('Are you sure you want to delete this comment?')) {
-          let index = data?.comments?.indexOf(obj);
-          data.comments.splice(index, 1);
-          await updateDoc(doc(confessionRef, docid), {
-            comments: data.comments
-          })
+          try {
+            const response = await axios.patch(`http://localhost:4000/api/deletecomment/${docid}/${obj._id}`, {}, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            if (response.status === 200) {
 
-          toast.success('Comment deleted successfully')
-          setMessage(false)
+
+
+              let index = data?.comments?.indexOf(obj);
+              data.comments.splice(index, 1);
+              toast.success('Comment deleted successfully')
+              setMessage(false)
+            }
+
+          } catch (error) {
+            toast.error('Error deleting comment')
+            console.error(error);
+
+          }
+
+
         }
 
       }
@@ -216,21 +223,21 @@ export default function Card({ data, avatarName, deleteConfession }) {
     let docid = data.id;
     let uid = JSON.parse(localStorage.getItem('user')).uid;
     try {
-      if (window.confirm('Are you sure you want to report this comment?')) {
-        let index = data?.comments?.indexOf(obj);
-        data.comments[index].reportedBy = data.comments[index].reportedBy || [];
-        if (data?.comments[index]?.reportedBy?.indexOf(uid) === -1) {
-          data.comments[index].reportedBy.push(uid);
-          await updateDoc(doc(confessionRef, docid), {
-            comments: data.comments
-          })
-          toast.success('Comment reported successfully')
-        }
-        else {
-          toast.warning('You have already reported this comment')
-        }
+      // if (window.confirm('Are you sure you want to report this comment?')) {
+      //   let index = data?.comments?.indexOf(obj);
+      //   data.comments[index].reportedBy = data.comments[index].reportedBy || [];
+      //   if (data?.comments[index]?.reportedBy?.indexOf(uid) === -1) {
+      //     data.comments[index].reportedBy.push(uid);
+      //     await updateDoc(doc(confessionRef, docid), {
+      //       comments: data.comments
+      //     })
+      //     toast.success('Comment reported successfully')
+      //   }
+      //   else {
+      //     toast.warning('You have already reported this comment')
+      //   }
 
-      }
+      // }
 
 
     } catch (error) {
@@ -246,38 +253,20 @@ export default function Card({ data, avatarName, deleteConfession }) {
         <div className='flex items-center space-x-2'>
 
 
+          {
+            data?.name ?
+              <Link to={`/profile/${data?.uid?._id}`}>
+                <img
+                  src={`/images/Avatar/Avatar${data?.uid?.avatar + 1}.jpg`}
+                  alt='profile'
+                  className='rounded-full border-blue-500 shadow-lg hover:border-2'
+                  width='50'
+                  height='50'
 
-          {avatarName !== null && data?.name !== 'Anonymous' ?
-            (
-              data?.name ?
-                <Link to={`/profile/${data?.uid}`}>
-                  <img
-                    src={`/images/Avatar/Avatar${avatarName + 1}.jpg`}
-                    alt='profile'
-                    className='rounded-full border-blue-500 shadow-lg hover:border-2'
-                    width='50'
-                    height='50'
-
-                  />
-                </Link>
-                :
-                <Skeleton width={50} height={50} borderRadius={1} count={1} duration={2} circle={true} />
-
-            )
-            :
-            <img
-
-              src={
-                avatarName !== null ?
-                  `/images/Avatar/Avatar${avatarName + 1}.jpg`
-                  :
-                  '/images/sad-face.png'
-              }
-              alt='profile'
-              className='rounded-full'
-              width='50'
-              height='50'
-            />
+                />
+              </Link>
+              :
+              <Skeleton width={50} height={50} borderRadius={1} count={1} duration={2} circle={true} />
 
           }
 

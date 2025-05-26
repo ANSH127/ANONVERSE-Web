@@ -103,7 +103,6 @@ export default function YourConfessionScreen() {
                     <Card key={index} data={data}
                       avatarName={avatarlist.filter((item) => item.uid === data.uid)[0]?.avatar}
                       deleteConfession={true}
-
                     />
                   )
                 })
