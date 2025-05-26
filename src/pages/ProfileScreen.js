@@ -66,9 +66,9 @@ export default function ProfileScreen() {
         toast.success('Avatar updated successfully')
         setChangeAvatar(!changeAvatar)
         localStorage.setItem('user', JSON.stringify({ ...userData, avatar: avatar - 1 }))
+        dispatch(setAvtar(avatar-1))
       }
 
-      // dispatch(setAvtar(avatar-1))
 
     } catch (error) {
       console.error("Error updating document: ", error);
@@ -104,7 +104,7 @@ export default function ProfileScreen() {
               userData === null ?
                 './images/sad-face.png'
                 :
-                `./images/Avatar/Avatar${userData?.avatar + 1}.jpg`
+                `./images/Avatar/Avatar${myavtar + 1}.jpg`
 
             }
             alt='profile'

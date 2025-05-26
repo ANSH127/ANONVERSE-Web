@@ -6,8 +6,7 @@ import { createSlice } from '@reduxjs/toolkit'
 // Define the initial state using that type
 const initialState = {
     user: null,
-    avtar: null,
-    AvtarList: [],
+    avtar: 0,
     theme:1
 }
 
@@ -22,21 +21,13 @@ export const userSlice = createSlice({
         setAvtar: (state, action) => {
             state.avtar = action.payload
         },
-        setAvtarList: (state, action) => {
-            state.AvtarList = action.payload
-        },
         setTheme : (state,action) =>{
             state.theme=action.payload
         }
-
-
-
-
-
     },
 })
 
-export const { setUser, setAvtar,setAvtarList,setTheme } = userSlice.actions
+export const { setUser, setAvtar,setTheme } = userSlice.actions
 
 
 export default userSlice.reducer

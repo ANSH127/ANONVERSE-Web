@@ -11,7 +11,6 @@ import axios from 'axios';
 
 
 export default function YourConfessionScreen() {
-  const avatarlist = useSelector(state => state.user.AvtarList)
 
   const [confessions, setConfessions] = React.useState([])
   const [loading, setLoading] = React.useState(false)
@@ -101,7 +100,6 @@ export default function YourConfessionScreen() {
                 confessions.map((data, index) => {
                   return (
                     <Card key={index} data={data}
-                      avatarName={avatarlist.filter((item) => item.uid === data.uid)[0]?.avatar}
                       deleteConfession={true}
                     />
                   )

@@ -4,7 +4,7 @@ import { confessionRef, usersRef } from '../config/firebase';
 import { getDocs, query, orderBy, limit, startAfter } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setAvtarList, setAvtar, setUser } from '../redux/slices/user';
+import {  setAvtar, setUser } from '../redux/slices/user';
 import { toast } from 'react-toastify';
 import Loadar from '../components/Loadar';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -55,7 +55,7 @@ export default function HomeScreen() {
         data.push({ avatar: doc.data().avatar, uid: doc.data().uid, id: doc.id, name: doc.data().name })
 
       });
-      dispatch(setAvtarList(data))
+      // dispatch(setAvtarList(data))
       let avtar = data.filter((item) => item.uid === uid)
       dispatch(setAvtar(avtar[0].avatar))
       dispatch(setUser(avtar[0]))
