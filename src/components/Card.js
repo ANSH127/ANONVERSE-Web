@@ -369,7 +369,7 @@ export default function Card({ data, deleteConfession }) {
       <div className='flex justify-between mt-2'>
         <div className='flex items-center space-x-2'>
           {loading ?
-            <img src='./images/loading2.gif' alt='loading' width='30' height='30' />
+            <img src='/images/loading2.gif' alt='loading' width='30' height='30' />
             :
             <div>
               {
@@ -425,7 +425,7 @@ export default function Card({ data, deleteConfession }) {
 
             {
               loading2 ?
-                <img src='./images/loadar.gif' alt='loading' width='30' height='30' />
+                <img src='/images/loadar.gif' alt='loading' width='30' height='30' />
                 :
                 <PaperAirplaneIcon className='h-8 w-8 text-blue-500'
                   onClick={handleComment}
@@ -440,7 +440,7 @@ export default function Card({ data, deleteConfession }) {
                 <div key={index} className={` mt-4 ${mode ? theme.black : 'bg-gray-100'}  p-2 rounded-lg`}>
                   <div className='flex space-x-2  items-center'>
                     <img
-                      src='./images/Avatar.jpg'
+                      src='/images/Avatar.jpg'
                       alt='profile'
                       className='rounded-full'
                       width='30'
