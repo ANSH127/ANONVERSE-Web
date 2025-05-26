@@ -18,12 +18,12 @@ import { ref, deleteObject } from "firebase/storage";
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import axios from 'axios';
 
 export default function Card({ data, avatarName, deleteConfession }) {
   const mode = useSelector(state => state.user.theme);
   // console.log(data);
   const navigate = useNavigate()
-  const [liked, setLiked] = React.useState(data?.likedby?.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ? true : false)
   const [message, setMessage] = React.useState(false)
   const [mesageData, setMessageData] = React.useState('')
   const [loading, setLoading] = React.useState(false)
@@ -32,27 +32,19 @@ export default function Card({ data, avatarName, deleteConfession }) {
   const handleLike = async () => {
     try {
       setLoading(true);
-      let docid = data.id;
-      let uid = JSON.parse(localStorage.getItem('user')).uid;
-      if (!liked && data?.likedby?.indexOf(uid) === -1) {
-
-        await updateDoc(doc(confessionRef, docid), {
-          likes: data.likes + 1,
-          likedby: [...data.likedby, uid]
-        })
-        data.likes = data.likes + 1;
-        data.likedby.push(uid);
-      }
-      else {
-        let index = data?.likedby?.indexOf(uid);
-        data.likedby.splice(index, 1);
-        await updateDoc(doc(confessionRef, docid), {
-          likes: data.likes - 1,
-          likedby: data.likedby
-        })
-        data.likes = data.likes - 1;
-
-
+      let docid = data._id;
+      const response = await axios.patch(`http://localhost:4000/api/updatelikes/${docid}`, {}, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if (response.status === 200) {
+        toast.success('Confession liked successfully')
+        data.likes = response.data.likes;
+        data.likedby = response.data.likedby;
+      } else {
+        toast.error('Error liking confession')
       }
 
     } catch (error) {
@@ -61,7 +53,6 @@ export default function Card({ data, avatarName, deleteConfession }) {
 
     }
     finally {
-      setLiked(!liked);
       setLoading(false);
     }
   }
@@ -74,24 +65,36 @@ export default function Card({ data, avatarName, deleteConfession }) {
     else {
       setLoading2(true);
 
-      let docid = data.id;
-      let uid = JSON.parse(localStorage.getItem('user')).uid;
+      let docid = data._id;
       try {
 
         let newComment = {
           comment: mesageData,
-          uid: uid,
           createdAt: new Date().toISOString(),
           reportedBy: []
 
         }
-        await updateDoc(doc(confessionRef, docid), {
-          comments: [...data.comments, newComment]
+        
+        const response = await axios.patch(`http://localhost:4000/api/addcomment/${docid}`, newComment, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
         })
-        data.comments.push(newComment);
+        if (response.status === 200) {
+          toast.success('Comment added successfully')
+          // console.log(response.data);
+        }
+        else {
+          toast.error('Error adding comment')
+        }
+
+        data.comments.push(response.data);
 
       } catch (error) {
         toast.error('Error commenting on confession')
+        console.log(error);
+        
 
       }
       finally {
@@ -103,21 +106,36 @@ export default function Card({ data, avatarName, deleteConfession }) {
   }
 
   const handleDelete = async () => {
-    let uid = JSON.parse(localStorage.getItem('user')).uid;
-    let docid = data.id;
+    let uid = JSON.parse(localStorage.getItem('user'))._id;
+    let docid = data._id;
     try {
       if (uid === data.uid) {
         // use window.confirm to ask user to confirm the delete
         if (window.confirm('Are you sure you want to delete this confession?')) {
 
-          if (data.image && data.imageSlug) {
-            const storageRef = ref(storage, `images/${data.imageSlug}`)
-            await deleteObject(storageRef)
+          // if (data.image && data.imageSlug) {
+          //   const storageRef = ref(storage, `images/${data.imageSlug}`)
+          //   await deleteObject(storageRef)
+          // }
+
+          // await deleteDoc(doc(confessionRef, docid));
+          // toast.success('Confession deleted successfully')
+          // navigate('/');
+
+          const response = await axios.delete(`http://localhost:4000/api/deleteconfession/${docid}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          if (response.status === 200) {
+            toast.success('Confession deleted successfully')
+            navigate('/');
+          } else {
+            toast.error('Error deleting confession')
           }
 
-          await deleteDoc(doc(confessionRef, docid));
-          toast.success('Confession deleted successfully')
-          navigate('/');
+
         }
       } else {
         toast.error('You are not authorized to delete this confession')
@@ -129,16 +147,31 @@ export default function Card({ data, avatarName, deleteConfession }) {
   }
 
   const handleReport = () => {
-    let uid = JSON.parse(localStorage.getItem('user')).uid;
-    let docid = data.id;
+    let uid = JSON.parse(localStorage.getItem('user'))._id;
+    let docid = data._id;
     try {
       if (data?.reportedBy?.indexOf(uid) === -1) {
         if (window.confirm('Are you sure you want to report this post?')) {
-          updateDoc(doc(confessionRef, docid), {
-            reportedBy: [...data.reportedBy, uid]
-          })
-          toast.success('Post reported successfully')
-          data.reportedBy.push(uid);
+          // updateDoc(doc(confessionRef, docid), {
+          //   reportedBy: [...data.reportedBy, uid]
+          // })
+
+          const response = axios.post(`http://localhost:4000/api/reportconfession/${docid}`, {},
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              }
+            }
+          )
+          if (response.status === 200) {
+            toast.success('Post reported successfully')
+            data.reportedBy.push(uid);
+
+          }
+          else {
+            toast.error('Error reporting post')
+          }
         }
 
       }
@@ -270,17 +303,17 @@ export default function Card({ data, avatarName, deleteConfession }) {
         <div className='flex space-x-2'>
 
           {
-            data?.uid === JSON.parse(localStorage.getItem('user')).uid && deleteConfession &&
+            data?.uid === JSON.parse(localStorage.getItem('user'))._id && deleteConfession &&
             <TrashIcon className='h-8 w-8 text-red-500' onClick={handleDelete} />}
 
           {
-            data?.uid !== JSON.parse(localStorage.getItem('user')).uid &&
+            data?.uid !== JSON.parse(localStorage.getItem('user'))._id &&
             <div>
 
               {
                 data?.createdAt ?
 
-                  data?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ?
+                  data?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user'))._id) !== -1 ?
                     <FlagIcon2 className='h-8 w-8 text-red-600' />
                     :
                     <FlagIcon className='h-8 w-8' onClick={handleReport} />
@@ -312,7 +345,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
             !imageLoaded &&
             <div className='mt-2'>
               <img
-                src='/images/blur-img.jpg' 
+                src='/images/blur-img.jpg'
                 alt='placeholder'
                 className='w-full rounded-lg transition-all duration-500'
               />
@@ -350,7 +383,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
               {
                 data?.createdAt ?
 
-                  (liked || data?.likedby?.indexOf(JSON.parse(localStorage.getItem('user')).uid) !== -1 ?
+                  (data?.likedby?.indexOf(JSON.parse(localStorage.getItem('user'))._id) !== -1 ?
                     <HeartIcon2 className='h-8 w-8 text-red-500 cursor-pointer'
                       onClick={handleLike} />
                     :
@@ -411,7 +444,7 @@ export default function Card({ data, avatarName, deleteConfession }) {
           {
             data?.comments.map((comment, index) => {
               return (
-                (comment?.reportedBy?.length) < 5 &&
+                (comment?.reportedby?.length) < 5 &&
                 <div key={index} className={` mt-4 ${mode ? theme.black : 'bg-gray-100'}  p-2 rounded-lg`}>
                   <div className='flex space-x-2  items-center'>
                     <img
@@ -428,15 +461,15 @@ export default function Card({ data, avatarName, deleteConfession }) {
                     </div>
 
                     {
-                      comment?.uid === JSON.parse(localStorage.getItem('user')).uid &&
+                      comment?.uid === JSON.parse(localStorage.getItem('user'))._id &&
                       <div className='ml-auto cursor-pointer'>
                         <TrashIcon className='h-5 w-5  text-red-500'
                           onClick={() => handleDeleteComment(comment)} />
                       </div>}
 
                     {
-                      comment?.uid !== JSON.parse(localStorage.getItem('user')).uid &&
-                      comment?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user')).uid) === -1
+                      comment?.uid !== JSON.parse(localStorage.getItem('user'))._id &&
+                      comment?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user'))._id) === -1
                       &&
                       <div className='ml-auto cursor-pointer'>
                         <FlagIcon className='h-5 w-5'
