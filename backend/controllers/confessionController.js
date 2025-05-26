@@ -1,8 +1,8 @@
 const Confession = require('../models/confessionModel');
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
-const cloudinary=require('../config/cloudinary');
-const fs=require('fs');
+const cloudinary = require('../config/cloudinary');
+const fs = require('fs');
 
 
 
@@ -10,12 +10,12 @@ const fs=require('fs');
 
 const getAllConfessionsWithRange = async (req, res) => {
     try {
-        let {start=0,end=5} = req.query;
+        let { start = 0, end = 5 } = req.query;
         start = parseInt(start);
         end = parseInt(end);
         const limit = end - start;
-        const confessions = await Confession.find().populate('uid','avatar').sort({ createdAt: -1 }).skip(start).limit(limit);
-        
+        const confessions = await Confession.find().populate('uid', 'avatar').sort({ createdAt: -1 }).skip(start).limit(limit);
+
         res.status(200).json(confessions);
 
     } catch (error) {
@@ -28,13 +28,13 @@ const getAllConfessionsWithRange = async (req, res) => {
 
 const getUserConfessions = async (req, res) => {
     try {
-        let {start=0,end=5} = req.query;
+        let { start = 0, end = 5 } = req.query;
         start = parseInt(start);
         end = parseInt(end);
         const limit = end - start;
 
-        const confessions = await Confession.find({ uid: req.user._id }).populate('uid','avatar').sort({ createdAt: -1 }).skip(start).limit(limit);
-        
+        const confessions = await Confession.find({ uid: req.user._id }).populate('uid', 'avatar').sort({ createdAt: -1 }).skip(start).limit(limit);
+
         res.status(200).json(confessions);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
@@ -46,7 +46,7 @@ const getUserConfessions = async (req, res) => {
 const getConfessionById = async (req, res) => {
     const id = req.params.id;
     try {
-        const confession = await Confession.find({uid: id}).populate('uid','avatar');
+        const confession = await Confession.find({ uid: id }).populate('uid', 'avatar');
         res.status(200).json(confession.filter((confession) => confession.name !== "Anonymous"));
     }
     catch (err) {
@@ -69,13 +69,13 @@ const addConfession = async (req, res) => {
     if (emptyfields.length > 0) {
         return res.status(400).json({ message: `please fill in the following fields: ${emptyfields.join(", ")}` });
     }
-    let updatedname=name;
-    if(name!=="Anonymous"){
-        const user= await User.findById(req.user._id);
-        if(!user){
+    let updatedname = name;
+    if (name !== "Anonymous") {
+        const user = await User.findById(req.user._id);
+        if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        updatedname=user.username;
+        updatedname = user.username;
     }
     // Parse arrays if sent as JSON strings
     comments = comments ? JSON.parse(comments) : [];
@@ -86,7 +86,13 @@ const addConfession = async (req, res) => {
     if (req.file) {
         try {
             const result = await cloudinary.uploader.upload(req.file.path, {
-                folder: 'confessions'
+                folder: 'confessions',
+                transformation: [
+                    { width: 1000, crop: "scale" },
+                    { quality: "auto" },
+                    { fetch_format: "auto" }
+                ]
+
             });
             imageUrl = result.secure_url;
             // Remove temp file
@@ -194,19 +200,19 @@ const updateLikes = async (req, res) => {
 const addComment = async (req, res) => {
     const id = req.params.id;
     const { comment } = req.body;
-    
+
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid confession id");
         const confession = await Confession.findById(id);
         if (!confession) throw new Error("Confession not found");
         const updatedConfession = await Confession.findByIdAndUpdate(id, { comments: [...confession.comments, { comment, uid: req.user._id }] }, { new: true });
-       // send the newly added only comment
-       res.status(200).json(updatedConfession.comments[updatedConfession.comments.length - 1]);
+        // send the newly added only comment
+        res.status(200).json(updatedConfession.comments[updatedConfession.comments.length - 1]);
 
 
     } catch (error) {
         console.log(error);
-        
+
         res.status(500).json({ message: error.message });
     }
 }
@@ -265,7 +271,7 @@ const reportComment = async (req, res) => {
 
 const fetchTrendingConfessions = async (req, res) => {
     try {
-        const confessions = await Confession.find().populate('uid','avatar').sort({ likes: -1 }).limit(5);
+        const confessions = await Confession.find().populate('uid', 'avatar').sort({ likes: -1 }).limit(5);
         res.status(200).json(confessions);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });

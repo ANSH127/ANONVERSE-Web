@@ -336,7 +336,7 @@ export default function Card({ data, deleteConfession }) {
 
 
           />
-          {
+          {/* {
             !imageLoaded &&
             <div className='mt-2'>
               <img
@@ -345,7 +345,7 @@ export default function Card({ data, deleteConfession }) {
                 className='w-full rounded-lg transition-all duration-500'
               />
             </div>
-          }
+          } */}
         </div>}
 
       {/* // description */}
