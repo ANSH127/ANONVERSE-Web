@@ -1,6 +1,4 @@
 import React from 'react'
-import { confessionRef } from '../config/firebase';
-import { getDocs, query, orderBy, limit } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { formatDistance } from 'date-fns'
 import { useSelector } from 'react-redux';
@@ -8,21 +6,11 @@ import { theme } from '../theme';
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import axios from 'axios';
 
 
-const imageList = [
-
-    './images/Avatar/Avatar1.jpg',
-    './images/Avatar/Avatar2.jpg',
-    './images/Avatar/Avatar3.jpg',
-    './images/Avatar/Avatar4.jpg',
-    './images/Avatar/Avatar5.jpg',
-    './images/Avatar/Avatar6.jpg',
-
-]
 
 export default function TrendingCards() {
-    const avatarlist = useSelector(state => state.user.AvtarList);
     const navigate = useNavigate()
     const [confessions, setConfessions] = React.useState([])
     const mode = useSelector(state => state.user.theme)
@@ -30,24 +18,21 @@ export default function TrendingCards() {
 
     const fetchConfessions = async () => {
         try {
-            if (localStorage.getItem('user') === null) {
+            if (localStorage.getItem('token') === null) {
                 navigate('/login')
                 return
             }
-
-            const q = query(confessionRef, orderBy('likes', 'desc'), orderBy('comments', 'desc'), orderBy('createdAt', 'desc'), limit(3));
-            const docSnap = await getDocs(q);
-            let data = []
-            docSnap.forEach((doc) => {
-                data.push({ ...doc.data(), id: doc.id })
+            const response = await axios.get('http://localhost:4000/api/trendingconfessions', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             });
-            setConfessions(data)
+            setConfessions(response.data)
+
 
         } catch (error) {
             console.log(error.message);
             console.error("Error getting documents: ", error);
-
-
         }
         finally {
             setLoading(false)
@@ -96,9 +81,7 @@ export default function TrendingCards() {
                             <div className='flex items-center justify-between'>
                                 <div className='flex items-center space-x-2'>
                                     <img
-                                        src={
-                                            imageList[avatarlist.find((item) => item.uid === confession.uid)?.avatar]
-                                        }
+                                        src={`/images/Avatar/Avatar${confession?.uid?.avatar + 1}.jpg`}
                                         alt='profile'
                                         className='rounded-full'
                                         width='40'
