@@ -9,7 +9,7 @@ router.use(requireAuth);
 
 // confession route
 
-router.get('/confessions', ConfessionControllers.getAllConfessions);
+router.get('/confessions', ConfessionControllers.getAllConfessionsWithRange);
 
 router.get('/userconfessions', ConfessionControllers.getUserConfessions);
 
