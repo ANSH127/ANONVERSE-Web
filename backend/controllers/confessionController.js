@@ -201,6 +201,33 @@ const deleteComment = async (req, res) => {
     }
 }
 
+// report comment
+const reportComment = async (req, res) => {
+    const confessionId = req.params.confessionId;
+    const commentId = req.params.commentId;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(confessionId)) throw new Error("Invalid confession id");
+        const confession = await Confession.findById(confessionId);
+        if (!confession) throw new Error("Confession not found");
+
+        const comment = confession.comments.find(comment => comment._id.toString() === commentId);
+        if (!comment) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+
+        if (comment.reportedby.includes(req.user._id)) {
+            return res.status(400).json({ message: "You have already reported this comment" });
+        }
+
+        comment.reportedby.push(req.user._id);
+        await confession.save();
+        res.status(200).json({ message: "Comment reported successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 const fetchTrendingConfessions = async (req, res) => {
     try {
         const confessions = await Confession.find().populate('uid','avatar').sort({ likes: -1 }).limit(5);
@@ -265,5 +292,6 @@ module.exports = {
     reportConfession,
     getUserDetailsById,
     getConfessionById,
-    deleteComment
+    deleteComment,
+    reportComment
 }

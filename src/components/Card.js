@@ -210,9 +210,28 @@ export default function Card({ data, deleteConfession }) {
 
   const handleReportComment = async (obj) => {
 
-    let docid = data.id;
+    let docid = data._id;
     let uid = JSON.parse(localStorage.getItem('user')).uid;
     try {
+
+      if (obj.reportedby.indexOf(uid) === -1) {
+        if (window.confirm('Are you sure you want to report this comment?')) {
+          const response = await axios.patch(`http://localhost:4000/api/reportcomment/${docid}/${obj._id}`, {}, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          if (response.status === 200) {
+            toast.success('Comment reported successfully')
+            obj.reportedby.push(uid);
+          } else {
+            toast.error('Error reporting comment')
+          }
+        }
+      } else {
+        toast.warning('You have already reported this comment')
+      }
 
 
     } catch (error) {

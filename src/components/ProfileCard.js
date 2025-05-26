@@ -60,9 +60,9 @@ export default function ProfileCard() {
                     src=
                     {
                         user !== null ?
-                            `./images/Avatar/Avatar${myavatar + 1}.jpg`
+                            `/images/Avatar/Avatar${myavatar + 1}.jpg`
                             :
-                            mode ? './images/sad-face2.png' : './images/sad-face.png'
+                            mode ? '/images/sad-face2.png' : '/images/sad-face.png'
                     }
 
                     alt='profile'

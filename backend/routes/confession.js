@@ -37,6 +37,8 @@ router.patch('/addcomment/:id', ConfessionControllers.addComment);
 // delete user comment
 router.patch('/deletecomment/:confessionId/:commentId', ConfessionControllers.deleteComment);
 
+// report user comment
+router.patch('/reportcomment/:confessionId/:commentId', ConfessionControllers.reportComment);
 
 // fetch trending confessions
 
