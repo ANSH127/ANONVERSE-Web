@@ -22,7 +22,12 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    avatar:{
+        type:Number,
+        default:0
     }
+    
 
 });
 
@@ -74,6 +79,6 @@ userSchema.statics.login = async function(email, password) {
 }
 
 
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

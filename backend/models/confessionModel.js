@@ -8,7 +8,8 @@ const commentSchema = new mongoose.Schema({
         required: true
     },
     uid: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     createdAt: {
@@ -51,7 +52,9 @@ const confessionSchema = new mongoose.Schema({
         default: Date.now()
     },
     uid: {
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 

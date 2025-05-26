@@ -34,6 +34,9 @@ router.patch('/updatelikes/:id', ConfessionControllers.updateLikes);
 
 router.patch('/addcomment/:id', ConfessionControllers.addComment);
 
+// delete user comment
+router.patch('/deletecomment/:confessionId/:commentId', ConfessionControllers.deleteComment);
+
 
 // fetch trending confessions
 

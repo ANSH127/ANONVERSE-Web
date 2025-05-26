@@ -18,7 +18,7 @@ const getAllConfessions = async (req, res) => {
 
 const getUserConfessions = async (req, res) => {
     try {
-        const confessions = await Confession.find({ uid: req.user._id });
+        const confessions = await Confession.find({ uid: req.user._id }).populate('uid','avatar');
         res.status(200).json(confessions);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
@@ -176,6 +176,31 @@ const addComment = async (req, res) => {
     }
 }
 
+
+
+// delete comment
+const deleteComment = async (req, res) => {
+    const confessionId = req.params.confessionId;
+    const commentId = req.params.commentId;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(confessionId)) throw new Error("Invalid confession id");
+        const confession = await Confession.findById(confessionId);
+        if (!confession) throw new Error("Confession not found");
+
+        const updatedComments = confession.comments.filter(comment => comment._id.toString() !== commentId);
+
+        if (updatedComments.length === confession.comments.length) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+
+        const updatedConfession = await Confession.findByIdAndUpdate(confessionId, { comments: updatedComments }, { new: true });
+        res.status(200).json(updatedConfession);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 const fetchTrendingConfessions = async (req, res) => {
     try {
         const confessions = await Confession.find().sort({ likes: -1 }).limit(3);
@@ -239,5 +264,6 @@ module.exports = {
     fetchAllUsers,
     reportConfession,
     getUserDetailsById,
-    getConfessionById
+    getConfessionById,
+    deleteComment
 }
