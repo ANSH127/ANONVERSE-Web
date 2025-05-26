@@ -89,8 +89,8 @@ export default function HomeScreen() {
 
 
   useEffect(() => {
-    fetchAllUsersAvatar()
-    fetchConfessions();
+    // fetchAllUsersAvatar()
+    // fetchConfessions();
 
     // eslint-disable-next-line
   }, [])

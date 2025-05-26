@@ -13,7 +13,7 @@ import axios from 'axios';
 
 export default function Card({ data, deleteConfession }) {
   const mode = useSelector(state => state.user.theme);
-  // console.log(data);
+  console.log(data);
   const navigate = useNavigate()
   const [message, setMessage] = React.useState(false)
   const [mesageData, setMessageData] = React.useState('')
@@ -100,18 +100,9 @@ export default function Card({ data, deleteConfession }) {
     let uid = JSON.parse(localStorage.getItem('user'))._id;
     let docid = data._id;
     try {
-      if (uid === data.uid) {
+      if (uid === data.uid._id) {
         // use window.confirm to ask user to confirm the delete
         if (window.confirm('Are you sure you want to delete this confession?')) {
-
-          // if (data.image && data.imageSlug) {
-          //   const storageRef = ref(storage, `images/${data.imageSlug}`)
-          //   await deleteObject(storageRef)
-          // }
-
-          // await deleteDoc(doc(confessionRef, docid));
-          // toast.success('Confession deleted successfully')
-          // navigate('/');
 
           const response = await axios.delete(`http://localhost:4000/api/deleteconfession/${docid}`, {
             headers: {
@@ -254,7 +245,8 @@ export default function Card({ data, deleteConfession }) {
 
 
           {
-            data?.name ?
+            data?.name!=="Anonymous"?
+            (data?.name?
               <Link to={`/profile/${data?.uid?._id}`}>
                 <img
                   src={`/images/Avatar/Avatar${data?.uid?.avatar + 1}.jpg`}
@@ -266,7 +258,18 @@ export default function Card({ data, deleteConfession }) {
                 />
               </Link>
               :
+              
               <Skeleton width={50} height={50} borderRadius={1} count={1} duration={2} circle={true} />
+            )
+            :
+            <img
+              src={`/images/Avatar/Avatar${data?.uid?.avatar + 1}.jpg`}
+              alt='profile'
+              className='rounded-full border-blue-500 shadow-lg hover:border-2'
+              width='50'
+              height='50'
+            />
+
 
           }
 
@@ -292,17 +295,17 @@ export default function Card({ data, deleteConfession }) {
         <div className='flex space-x-2'>
 
           {
-            data?.uid === JSON.parse(localStorage.getItem('user'))._id && deleteConfession &&
+            data?.uid?._id === JSON.parse(localStorage.getItem('user'))?._id && deleteConfession &&
             <TrashIcon className='h-8 w-8 text-red-500' onClick={handleDelete} />}
 
           {
-            data?.uid !== JSON.parse(localStorage.getItem('user'))._id &&
+            data?.uid?._id !== JSON.parse(localStorage.getItem('user'))?._id &&
             <div>
 
               {
                 data?.createdAt ?
 
-                  data?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user'))._id) !== -1 ?
+                  data?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user'))?._id) !== -1 ?
                     <FlagIcon2 className='h-8 w-8 text-red-600' />
                     :
                     <FlagIcon className='h-8 w-8' onClick={handleReport} />
@@ -345,7 +348,7 @@ export default function Card({ data, deleteConfession }) {
       {/* // description */}
       <div className='mt-2'>
         {
-          data?.reportedBy?.length > 5 && data.uid === JSON.parse(localStorage.getItem('user')).uid &&
+          data?.reportedBy?.length > 5 && data.uid._id === JSON.parse(localStorage.getItem('user')).uid &&
           <p className='text-red-500 font-semibold'>
             This post has been reported by many users and may be not visible to others.
           </p>
