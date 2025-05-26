@@ -88,6 +88,12 @@ const deleteConfession = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid confession id");
         const confession = await Confession.findById(id);
         if (!confession) throw new Error("Confession not found");
+
+        if (confession.uid.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: "You are not authorized to delete this confession" });
+        }
+
+
         await Confession.findByIdAndDelete(id);
         res.status(200).json({ message: "Confession deleted successfully" });
     } catch (error) {
@@ -153,13 +159,19 @@ const updateLikes = async (req, res) => {
 const addComment = async (req, res) => {
     const id = req.params.id;
     const { comment } = req.body;
+    
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid confession id");
         const confession = await Confession.findById(id);
         if (!confession) throw new Error("Confession not found");
         const updatedConfession = await Confession.findByIdAndUpdate(id, { comments: [...confession.comments, { comment, uid: req.user._id }] }, { new: true });
-        res.status(200).json(updatedConfession);
+       // send the newly added only comment
+       res.status(200).json(updatedConfession.comments[updatedConfession.comments.length - 1]);
+
+
     } catch (error) {
+        console.log(error);
+        
         res.status(500).json({ message: error.message });
     }
 }

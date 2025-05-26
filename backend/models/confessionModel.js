@@ -14,7 +14,11 @@ const commentSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now()
-    }
+    },
+    reportedby: {
+        type: Array,
+        default: []
+    },
 });
 
 const confessionSchema = new mongoose.Schema({
