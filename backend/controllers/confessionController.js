@@ -1,8 +1,12 @@
 const Confession = require('../models/confessionModel');
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
-// get confwssion
+const cloudinary=require('../config/cloudinary');
+const fs=require('fs');
 
+
+
+// get confwssion
 
 const getAllConfessionsWithRange = async (req, res) => {
     try {
@@ -53,7 +57,7 @@ const getConfessionById = async (req, res) => {
 // add confession
 
 const addConfession = async (req, res) => {
-    const { name, description, comments, likes, likedby, reportedby } = req.body;
+    let { name, description, comments, likes, likedby, reportedby } = req.body;
     let emptyfields = [];
     if (!name) {
         emptyfields.push("name");
@@ -73,6 +77,24 @@ const addConfession = async (req, res) => {
         }
         updatedname=user.username;
     }
+    // Parse arrays if sent as JSON strings
+    comments = comments ? JSON.parse(comments) : [];
+    likedby = likedby ? JSON.parse(likedby) : [];
+    reportedby = reportedby ? JSON.parse(reportedby) : [];
+
+    let imageUrl = '';
+    if (req.file) {
+        try {
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: 'confessions'
+            });
+            imageUrl = result.secure_url;
+            // Remove temp file
+            fs.unlinkSync(req.file.path);
+        } catch (err) {
+            return res.status(500).json({ message: "Image upload failed" });
+        }
+    }
 
     const newConfession = new Confession({
         name: updatedname,
@@ -81,6 +103,7 @@ const addConfession = async (req, res) => {
         likes,
         likedby,
         reportedby,
+        image: imageUrl,
         createdAt: new Date(),
         uid: req.user._id
     });

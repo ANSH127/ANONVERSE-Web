@@ -26,26 +26,29 @@ export default function AddConfessionForm() {
             return
         }
         e.preventDefault()
-        try{
+        try {
 
-            if(!localStorage.getItem('token')){
+            if (!localStorage.getItem('token')) {
                 toast.error('Please login to submit confession')
                 return
             }
 
             setLoading(true)
-            
-            const response= await axios.post('http://localhost:4000/api/addconfession', {
-                name: name,
-                description: confession,
-                comments: [],
-                likes: 0,
-                likedby: [],
-                reportedby: [],
 
-            }, {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('description', confession);
+            formData.append('comments', JSON.stringify([]));
+            formData.append('likes', 0);
+            formData.append('likedby', JSON.stringify([]));
+            formData.append('reportedby', JSON.stringify([]));
+            if (imageUpload) {
+                formData.append('image', imageUpload);
+            }
+
+            const response = await axios.post('http://localhost:4000/api/addconfession',formData , {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })

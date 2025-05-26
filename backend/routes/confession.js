@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const ConfessionControllers = require('../controllers/confessionController');
 const requireAuth = require('../middleware/requireAuth');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 
 // middleware
@@ -15,7 +17,7 @@ router.get('/userconfessions', ConfessionControllers.getUserConfessions);
 
 router.get('/confessionbyid/:id', ConfessionControllers.getConfessionById);
 
-router.post('/addconfession', ConfessionControllers.addConfession);
+router.post('/addconfession', upload.single('image'), ConfessionControllers.addConfession);
 
 router.delete('/deleteconfession/:id', ConfessionControllers.deleteConfession);
 
