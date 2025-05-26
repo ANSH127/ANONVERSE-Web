@@ -6,6 +6,8 @@ import Card from '../components/Card'
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import axios from 'axios'
+
 export default function UserProfileScreen() {
     const { uid } = useParams()
 
@@ -15,13 +17,14 @@ export default function UserProfileScreen() {
 
     const fetchUserDetails = async () => {
         try {
-            const q = query(usersRef, where('uid', '==', uid));
-            const querySnapshot = await getDocs(q);
-            let temp = {}
-            querySnapshot.forEach((doc) => {
-                temp = { ...doc.data(), id: doc.id }
+
+            const response = await axios.get(`http://localhost:4000/api/getuserdetailsbyid/${uid}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             });
-            setUserData(temp)
+            // console.log(response.data);
+            setUserData(response.data);
         } catch (error) {
             console.error("Error getting documents: ", error);
         }
@@ -30,17 +33,20 @@ export default function UserProfileScreen() {
     const fetchConfessions = async () => {
         try {
             if (uid === null) {
-                return
+                return;
             }
-            const q = query(confessionRef, where('uid', '==', uid), orderBy('createdAt', 'desc'))
-            const docSnap = await getDocs(q);
-            let data = []
-            docSnap.forEach((doc) => {
-                data.push({ ...doc.data(), id: doc.id })
+
+            const response= await axios.get(`http://localhost:4000/api/confessionbyid/${uid}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
             });
+            let data = response.data;
             // filter the confessions which are not anonymous
             data = data.filter((data) => data.name !== 'Anonymous')
             setConfessions(data)
+
+
         } catch (error) {
             console.error("Error getting documents: ", error);
         }
@@ -82,7 +88,7 @@ export default function UserProfileScreen() {
                             />}
 
                     <h1 className='text-2xl py-2 font-bold'>
-                        {userData.name || <Skeleton width={100} />}
+                        {userData.username || <Skeleton width={100} />}
 
                     </h1>
                 </div>

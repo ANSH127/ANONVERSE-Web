@@ -30,7 +30,7 @@ const getUserConfessions = async (req, res) => {
 const getConfessionById = async (req, res) => {
     const id = req.params.id;
     try {
-        const confession = await Confession.find({uid: id})
+        const confession = await Confession.find({uid: id}).populate('uid','avatar');
         res.status(200).json(confession.filter((confession) => confession.name !== "Anonymous"));
     }
     catch (err) {
