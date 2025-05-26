@@ -1,16 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import Loadar from '../components/Loadar';
-import { auth, usersRef } from '../config/firebase'
-import { signInWithEmailAndPassword, getAuth, signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from 'firebase/auth'
-import { addDoc } from 'firebase/firestore'
+// import { auth, usersRef } from '../config/firebase'
+// import { signInWithEmailAndPassword, getAuth, signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from 'firebase/auth'
+// import { addDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { theme } from '../theme';
 import { useSelector } from 'react-redux'
 import Footer from '../components/Footer';
+import axios from 'axios';
 
 export default function SignInScreen() {
-  const provider = new GoogleAuthProvider()
+  // const provider = new GoogleAuthProvider()
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [loading, setLoading] = React.useState(false)
@@ -24,19 +25,34 @@ export default function SignInScreen() {
       setLoading(true)
       try {
 
-        const userCredential = await signInWithEmailAndPassword(auth, email, password)
-        const user = userCredential.user
-        if (user.emailVerified) {
-          localStorage.setItem('user', JSON.stringify(user))
+        // const userCredential = await signInWithEmailAndPassword(auth, email, password)
+        // const user = userCredential.user
+        // if (user.emailVerified) {
+        //   localStorage.setItem('user', JSON.stringify(user))
 
+        //   toast.success('Login successfull')
+        //   setEmail('')
+        //   setPassword('')
+        //   window.location.href = '/'
+
+        // }
+        // else {
+        //   toast.warning('Please verify your email')
+        // }
+
+        const response = await axios.post('http://localhost:4000/api/login', {
+          email: email,
+          password: password
+        })
+        if (response.status === 200) {
+          localStorage.setItem('token', response.data.token)
+          localStorage.setItem('user', JSON.stringify(response.data))
           toast.success('Login successfull')
           setEmail('')
           setPassword('')
           window.location.href = '/'
-
-        }
-        else {
-          toast.warning('Please verify your email')
+        } else {
+          toast.error('Invalid credentials')
         }
 
       } catch (error) {
@@ -49,34 +65,34 @@ export default function SignInScreen() {
       }
     }
   }
-  const handleGoogleAuth = async () => {
-    const auth = getAuth()
-    try {
-      setLoading(true)
-      const result = await signInWithPopup(auth, provider)
-      const user = result.user
-      const { isNewUser } = getAdditionalUserInfo(result)
-      if (isNewUser) {
-        await addDoc(usersRef, {
-          name: user.displayName,
-          email: user.email,
-          uid: user.uid,
-          createdAt: new Date().toISOString(),
-          avatar: 0
-        })
-      }
-      localStorage.setItem('user', JSON.stringify(user))
-      toast.success('Login successfull')
-      window.location.href = '/'
-    } catch (error) {
-      console.log(error)
-      toast.error('Error signing in')
-    }
-    finally {
-      setLoading(false)
-    }
+  // const handleGoogleAuth = async () => {
+  //   const auth = getAuth()
+  //   try {
+  //     setLoading(true)
+  //     const result = await signInWithPopup(auth, provider)
+  //     const user = result.user
+  //     const { isNewUser } = getAdditionalUserInfo(result)
+  //     if (isNewUser) {
+  //       await addDoc(usersRef, {
+  //         name: user.displayName,
+  //         email: user.email,
+  //         uid: user.uid,
+  //         createdAt: new Date().toISOString(),
+  //         avatar: 0
+  //       })
+  //     }
+  //     localStorage.setItem('user', JSON.stringify(user))
+  //     toast.success('Login successfull')
+  //     window.location.href = '/'
+  //   } catch (error) {
+  //     console.log(error)
+  //     toast.error('Error signing in')
+  //   }
+  //   finally {
+  //     setLoading(false)
+  //   }
 
-  }
+  // }
   return (
     <div className=' w-full gap-4 col-span-2 h-full shadow-lg mr-5'>
       <div className=' overflow-y-auto overflow-x-hidden'
@@ -115,7 +131,7 @@ export default function SignInScreen() {
 
           <h3 className="text-center">Or</h3>
           <div className="flex justify-center gap-4">
-            <img src='/images/googleIcon.png' alt='google' onClick={handleGoogleAuth} className='w-10 h-10 rounded-full cursor-pointer' />
+            <img src='/images/googleIcon.png' alt='google' className='w-10 h-10 rounded-full cursor-pointer' />
           </div>
         </div>
 

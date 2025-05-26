@@ -1,13 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import Loadar from '../components/Loadar';
-import { createUserWithEmailAndPassword, sendEmailVerification, getAuth, signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from 'firebase/auth'
-import { auth, usersRef } from '../config/firebase'
-import { addDoc } from 'firebase/firestore'
+// import { createUserWithEmailAndPassword, sendEmailVerification, getAuth, signInWithPopup, GoogleAuthProvider, getAdditionalUserInfo } from 'firebase/auth'
+// import { auth, usersRef } from '../config/firebase'
+// import { addDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { theme } from '../theme';
 import { useSelector } from 'react-redux'
 import Footer from '../components/Footer';
+import axios from 'axios';
 
 
 
@@ -18,7 +19,7 @@ export default function SignUpScreen() {
     const [password, setPassword] = React.useState('')
     const [Name, setName] = React.useState('')
 
-    const provider = new GoogleAuthProvider()
+    // const provider = new GoogleAuthProvider()
 
     const handleSignUp = async () => {
         if (email === '' || password === '' || Name === '') {
@@ -28,23 +29,37 @@ export default function SignUpScreen() {
         else {
             setLoading(true)
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-                const user = userCredential.user
-                await sendEmailVerification(user)
+                // const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+                // const user = userCredential.user
+                // await sendEmailVerification(user)
 
-                await addDoc(usersRef, {
-                    name: Name,
+                // await addDoc(usersRef, {
+                //     name: Name,
+                //     email: email,
+                //     uid: user.uid,
+                //     createdAt: new Date().toISOString(),
+                //     avatar: 0
+                // })
+
+                const response = await axios.post('http://localhost:4000/api/signup', {
+                    username: Name,
                     email: email,
-                    uid: user.uid,
-                    createdAt: new Date().toISOString(),
-                    avatar: 0
+                    password: password
                 })
 
+                if (response.status === 201) {
+                    localStorage.setItem('token', response.data.token)
 
-                toast.success('User created successfully, Please verify your email')
-                setEmail('')
-                setPassword('')
-                setName('')
+
+
+                    toast.success('User created successfully, Please verify your email')
+                    setEmail('')
+                    setPassword('')
+                    setName('')
+                    
+                }else{
+                    toast.error('Error signing up')
+                }
 
             } catch (error) {
                 console.log(error)
@@ -58,34 +73,34 @@ export default function SignUpScreen() {
     }
 
 
-    const handleGoogleAuth = async () => {
-        const auth = getAuth()
-        try {
-            setLoading(true)
-            const result = await signInWithPopup(auth, provider)
-            const user = result.user
-            const { isNewUser } = getAdditionalUserInfo(result)
-            if (isNewUser) {
-                await addDoc(usersRef, {
-                    name: user.displayName,
-                    email: user.email,
-                    uid: user.uid,
-                    createdAt: new Date().toISOString(),
-                    avatar: 0
-                })
-            }
-            localStorage.setItem('user', JSON.stringify(user))
-            toast.success('Login successfull')
-            window.location.href = '/'
-        } catch (error) {
-            console.log(error)
-            toast.error('Error signing in')
-        }
-        finally {
-            setLoading(false)
-        }
+    // const handleGoogleAuth = async () => {
+    //     const auth = getAuth()
+    //     try {
+    //         setLoading(true)
+    //         const result = await signInWithPopup(auth, provider)
+    //         const user = result.user
+    //         const { isNewUser } = getAdditionalUserInfo(result)
+    //         if (isNewUser) {
+    //             await addDoc(usersRef, {
+    //                 name: user.displayName,
+    //                 email: user.email,
+    //                 uid: user.uid,
+    //                 createdAt: new Date().toISOString(),
+    //                 avatar: 0
+    //             })
+    //         }
+    //         localStorage.setItem('user', JSON.stringify(user))
+    //         toast.success('Login successfull')
+    //         window.location.href = '/'
+    //     } catch (error) {
+    //         console.log(error)
+    //         toast.error('Error signing in')
+    //     }
+    //     finally {
+    //         setLoading(false)
+    //     }
 
-    }
+    // }
 
     return (
         <div className=' w-full gap-4 col-span-2 h-full shadow-lg mr-5'>
@@ -103,12 +118,15 @@ export default function SignUpScreen() {
 
                     <input type="text" placeholder="Full Name" className={`w-full p-4 border-2 ${mode ? theme.black : theme.white} border-gray-300 rounded-lg`}
                         onChange={(e) => setName(e.target.value)}
+                        value={Name}
                     />
                     <input type="text" placeholder="Email" className={`w-full p-4 border-2 ${mode ? theme.black : theme.white} border-gray-300 rounded-lg`}
                         onChange={(e) => setEmail(e.target.value)}
+                        value={email}
                     />
                     <input type="password" placeholder="Password" className={`w-full p-4 border-2 ${mode ? theme.black : theme.white} border-gray-300 rounded-lg`}
                         onChange={(e) => setPassword(e.target.value)}
+                        value={password}
                     />
 
                     <p className="text-center">Already have an account?
@@ -125,14 +143,14 @@ export default function SignUpScreen() {
                     }
                     <h3 className="text-center">Or</h3>
                     <div className="flex justify-center gap-4">
-                        <img src='/images/googleIcon.png' alt='google' onClick={handleGoogleAuth} className='w-10 h-10 rounded-full cursor-pointer' />
+                        <img src='/images/googleIcon.png' alt='google' className='w-10 h-10 rounded-full cursor-pointer' />
                     </  div>
 
                 </div>
 
 
 
-            <Footer />
+                <Footer />
 
             </div>
 
