@@ -83,6 +83,7 @@ const addConfession = async (req, res) => {
     reportedby = reportedby ? JSON.parse(reportedby) : [];
 
     let imageUrl = '';
+    let imageId = '';
     if (req.file) {
         try {
             const result = await cloudinary.uploader.upload(req.file.path, {
@@ -95,6 +96,7 @@ const addConfession = async (req, res) => {
 
             });
             imageUrl = result.secure_url;
+            imageId = result.public_id;
             // Remove temp file
             fs.unlinkSync(req.file.path);
         } catch (err) {
@@ -110,6 +112,7 @@ const addConfession = async (req, res) => {
         likedby,
         reportedby,
         image: imageUrl,
+        imageId,
         createdAt: new Date(),
         uid: req.user._id
     });
@@ -132,6 +135,11 @@ const deleteConfession = async (req, res) => {
 
         if (confession.uid.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: "You are not authorized to delete this confession" });
+        }
+
+        // If the confession has an image, delete it from Cloudinary
+        if (confession.imageId) {
+            await cloudinary.uploader.destroy(confession.imageId);
         }
 
 

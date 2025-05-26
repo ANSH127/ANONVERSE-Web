@@ -59,6 +59,10 @@ const confessionSchema = new mongoose.Schema({
     image: {
         type: String,
         default: null
+    },
+    imageId: {
+        type: String,
+        default: null
     }
 });
 
