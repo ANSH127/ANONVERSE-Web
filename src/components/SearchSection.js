@@ -1,8 +1,5 @@
 import React from 'react'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-
-import { usersRef } from '../config/firebase'
-import { getDocs } from 'firebase/firestore'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { theme } from '../theme';
@@ -13,21 +10,8 @@ import axios from 'axios';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
-const imageList = [
-
-    '/images/Avatar/Avatar1.jpg',
-    '/images/Avatar/Avatar2.jpg',
-    '/images/Avatar/Avatar3.jpg',
-    '/images/Avatar/Avatar4.jpg',
-    '/images/Avatar/Avatar5.jpg',
-    '/images/Avatar/Avatar6.jpg',
-
-]
-
 export default function SearchSection() {
     const navigate = useNavigate()
-
-    const avatarlist = useSelector(state => state.user.AvtarList)
     const [userlist, setUserList] = React.useState([])
     const [searchlist, setSearchList] = React.useState([])
     const mode = useSelector(state => state.user.theme)

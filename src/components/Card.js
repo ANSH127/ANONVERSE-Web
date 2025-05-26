@@ -13,7 +13,7 @@ import axios from 'axios';
 
 export default function Card({ data, deleteConfession }) {
   const mode = useSelector(state => state.user.theme);
-  console.log(data);
+  // console.log(data);
   const navigate = useNavigate()
   const [message, setMessage] = React.useState(false)
   const [mesageData, setMessageData] = React.useState('')
