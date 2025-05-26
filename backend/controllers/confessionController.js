@@ -41,7 +41,7 @@ const getConfessionById = async (req, res) => {
 // add confession
 
 const addConfession = async (req, res) => {
-    const { name, description, comments, likes, likedby, reportedby, createdAt } = req.body;
+    const { name, description, comments, likes, likedby, reportedby } = req.body;
     let emptyfields = [];
     if (!name) {
         emptyfields.push("name");
@@ -53,8 +53,17 @@ const addConfession = async (req, res) => {
     if (emptyfields.length > 0) {
         return res.status(400).json({ message: `please fill in the following fields: ${emptyfields.join(", ")}` });
     }
+    let updatedname=name;
+    if(name!=="Anonymous"){
+        const user= await User.findById(req.user._id);
+        if(!user){
+            return res.status(404).json({ message: "User not found" });
+        }
+        updatedname=user.username;
+    }
+
     const newConfession = new Confession({
-        name,
+        name: updatedname,
         description,
         comments,
         likes,
