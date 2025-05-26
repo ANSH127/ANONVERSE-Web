@@ -203,7 +203,7 @@ const deleteComment = async (req, res) => {
 
 const fetchTrendingConfessions = async (req, res) => {
     try {
-        const confessions = await Confession.find().populate('uid','avatar').sort({ likes: -1 }).limit(3);
+        const confessions = await Confession.find().populate('uid','avatar').sort({ likes: -1 }).limit(5);
         res.status(200).json(confessions);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });

@@ -14,6 +14,7 @@ export default function TrendingCards() {
     const navigate = useNavigate()
     const [confessions, setConfessions] = React.useState([])
     const mode = useSelector(state => state.user.theme)
+    const myavatar = useSelector(state => state.user.avtar);
     const [loading, setLoading] = React.useState(true)
 
     const fetchConfessions = async () => {
@@ -43,7 +44,7 @@ export default function TrendingCards() {
         fetchConfessions();
 
         // eslint-disable-next-line
-    }, [])
+    }, [myavatar])
 
 
 
