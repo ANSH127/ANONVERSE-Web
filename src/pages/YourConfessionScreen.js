@@ -1,12 +1,12 @@
 import React from 'react'
 import Card from '../components/Card';
-import { confessionRef } from '../config/firebase';
-import { getDocs, where, query, orderBy } from 'firebase/firestore'
+// import { confessionRef } from '../config/firebase';
+// import { getDocs, where, query, orderBy } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify'
 // import Loadar from '../components/Loadar';
-
+import axios from 'axios';
 
 
 
@@ -22,20 +22,32 @@ export default function YourConfessionScreen() {
     try {
       setLoading(true)
 
-      if (localStorage.getItem('user') === null) {
+      if (!localStorage.getItem('token')) {
         navigate('/login')
         return
       }
-      let uid = JSON.parse(localStorage.getItem('user')).uid
-      const q = query(confessionRef, where('uid', '==', uid), orderBy('createdAt', 'desc'))
+      // let uid = JSON.parse(localStorage.getItem('user')).uid
+      // const q = query(confessionRef, where('uid', '==', uid), orderBy('createdAt', 'desc'))
 
-      const docSnap = await getDocs(q);
-      let data = []
-      docSnap.forEach((doc) => {
-        data.push({ ...doc.data(), id: doc.id })
-      });
-      setConfessions(data)
+      // const docSnap = await getDocs(q);
+      // let data = []
+      // docSnap.forEach((doc) => {
+      //   data.push({ ...doc.data(), id: doc.id })
+      // });
+      // setConfessions(data)
       // console.log(data)
+
+      const response = await axios.get('http://localhost:4000/api/userconfessions', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      if (response.status === 200) {
+        setConfessions(response.data)
+      } else {
+        toast.error('Error fetching confessions')
+      }
 
     } catch (error) {
       console.error("Error getting documents: ", error);
