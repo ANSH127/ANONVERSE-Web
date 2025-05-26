@@ -1,7 +1,5 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { usersRef, confessionRef } from '../config/firebase'
-import { getDocs, where, query, orderBy } from 'firebase/firestore'
 import Card from '../components/Card'
 
 import Skeleton from 'react-loading-skeleton'

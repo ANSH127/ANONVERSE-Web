@@ -62,7 +62,7 @@ export default function Card({ data, deleteConfession }) {
         let newComment = {
           comment: mesageData,
           createdAt: new Date().toISOString(),
-          reportedBy: []
+          reportedby: []
 
         }
 
@@ -128,17 +128,15 @@ export default function Card({ data, deleteConfession }) {
     }
   }
 
-  const handleReport = () => {
+  const handleReport =async () => {
     let uid = JSON.parse(localStorage.getItem('user'))._id;
     let docid = data._id;
     try {
-      if (data?.reportedBy?.indexOf(uid) === -1) {
+      if (data?.reportedby?.indexOf(uid) === -1) {
         if (window.confirm('Are you sure you want to report this post?')) {
-          // updateDoc(doc(confessionRef, docid), {
-          //   reportedBy: [...data.reportedBy, uid]
-          // })
+          
 
-          const response = axios.post(`http://localhost:4000/api/reportconfession/${docid}`, {},
+          const response = await axios.patch(`http://localhost:4000/api/reportconfession/${docid}`, {},
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -146,9 +144,10 @@ export default function Card({ data, deleteConfession }) {
               }
             }
           )
+          
           if (response.status === 200) {
             toast.success('Post reported successfully')
-            data.reportedBy.push(uid);
+            data.reportedby.push(uid);
 
           }
           else {
@@ -214,21 +213,6 @@ export default function Card({ data, deleteConfession }) {
     let docid = data.id;
     let uid = JSON.parse(localStorage.getItem('user')).uid;
     try {
-      // if (window.confirm('Are you sure you want to report this comment?')) {
-      //   let index = data?.comments?.indexOf(obj);
-      //   data.comments[index].reportedBy = data.comments[index].reportedBy || [];
-      //   if (data?.comments[index]?.reportedBy?.indexOf(uid) === -1) {
-      //     data.comments[index].reportedBy.push(uid);
-      //     await updateDoc(doc(confessionRef, docid), {
-      //       comments: data.comments
-      //     })
-      //     toast.success('Comment reported successfully')
-      //   }
-      //   else {
-      //     toast.warning('You have already reported this comment')
-      //   }
-
-      // }
 
 
     } catch (error) {
@@ -305,7 +289,7 @@ export default function Card({ data, deleteConfession }) {
               {
                 data?.createdAt ?
 
-                  data?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user'))?._id) !== -1 ?
+                  data?.reportedby?.indexOf(JSON.parse(localStorage.getItem('user'))?._id) !== -1 ?
                     <FlagIcon2 className='h-8 w-8 text-red-600' />
                     :
                     <FlagIcon className='h-8 w-8' onClick={handleReport} />
@@ -348,7 +332,7 @@ export default function Card({ data, deleteConfession }) {
       {/* // description */}
       <div className='mt-2'>
         {
-          data?.reportedBy?.length > 5 && data.uid._id === JSON.parse(localStorage.getItem('user')).uid &&
+          data?.reportedby?.length > 5 && data.uid._id === JSON.parse(localStorage.getItem('user'))._id &&
           <p className='text-red-500 font-semibold'>
             This post has been reported by many users and may be not visible to others.
           </p>
@@ -461,7 +445,7 @@ export default function Card({ data, deleteConfession }) {
 
                     {
                       comment?.uid !== JSON.parse(localStorage.getItem('user'))._id &&
-                      comment?.reportedBy?.indexOf(JSON.parse(localStorage.getItem('user'))._id) === -1
+                      comment?.reportedby?.indexOf(JSON.parse(localStorage.getItem('user'))._id) === -1
                       &&
                       <div className='ml-auto cursor-pointer'>
                         <FlagIcon className='h-5 w-5'
