@@ -91,7 +91,7 @@ const addConfession = async (req, res) => {
                     { width: 1000, crop: "scale" },
                     { quality: "auto" },
                     { fetch_format: "auto" }
-                ]
+                ],
 
             });
             imageUrl = result.secure_url;

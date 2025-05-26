@@ -100,9 +100,9 @@ export default function AddConfessionForm() {
 
                 <input type="file" className={`w-full p-4 border-2 ${mode ? "bg-black" : 'bg-white'} border-gray-300 rounded-lg`}
                     onChange={(e) => setImageUpload(e.target.files[0])}
-                    accept='image/png, image/jpeg'
+                    accept='image/png, image/jpeg, image/jpg, image/heic'
                     placeholder='Upload Image(Optional)'
-                />
+                /> 
 
 
 
