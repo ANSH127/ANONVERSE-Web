@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { theme } from '../theme';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 import Skeleton from 'react-loading-skeleton'
@@ -34,19 +35,20 @@ export default function SearchSection() {
 
     const fetchAllUsers = async () => {
         try {
-            if (localStorage.getItem('user') === null) {
+            if (localStorage.getItem('token') === null) {
                 navigate('/login')
                 return
             }
-            let uid = JSON.parse(localStorage.getItem('user')).uid
-            if (uid === null) return
 
-            let temp = []
-            const data = await getDocs(usersRef)
-            data.forEach((doc) => {
-                temp.push({ ...doc.data(), id: doc.id })
-            })
-            setUserList(temp)
+            const response = await axios.get('http://localhost:4000/api/fetchallusers', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            console.log(response.data);
+            setUserList(response.data);
+
+
 
 
         } catch (error) {
@@ -77,7 +79,7 @@ export default function SearchSection() {
 
         let temp = []
         userlist.forEach((user) => {
-            if (user.name.toLowerCase().includes(search.toLowerCase())) {
+            if (user.username.toLowerCase().includes(search.toLowerCase())) {
                 temp.push(user)
             }
         })
@@ -122,17 +124,17 @@ export default function SearchSection() {
                     {
                         searchlist?.map((user, index) => {
                             return (
-                                <Link to={`/profile/${user.uid}`} key={index}>
+                                <Link to={`/profile/${user._id}`} key={index}>
                                     <div key={index} className={`flex items-center justify-between ${mode ? 'bg-black' : 'bg-gray-100'}  shadow-lg p-2 mb-1 rounded-lg`}>
                                         <div className='flex items-center gap-2'>
                                             <img
                                                 src={
-                                                    imageList[avatarlist.filter((item) => item.uid === user.uid)[0]?.avatar]
+                                                    `/images/Avatar/Avatar${user.avatar + 1}.jpg` 
                                                 }
                                                 alt='avatar'
                                                 className='h-8 w-8 rounded-full'
                                             />
-                                            <p className='text-sm font-semibold'>{user.name}</p>
+                                            <p className='text-sm font-semibold'>{user.username}</p>
                                         </div>
                                     </div>
                                 </Link>

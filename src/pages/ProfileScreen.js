@@ -60,11 +60,12 @@ export default function ProfileScreen() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
-      console.log(response.data);
+      // console.log(response.data);
 
       if (response.status === 200) {
         toast.success('Avatar updated successfully')
         setChangeAvatar(!changeAvatar)
+        localStorage.setItem('user', JSON.stringify({ ...userData, avatar: avatar - 1 }))
       }
 
       // dispatch(setAvtar(avatar-1))
