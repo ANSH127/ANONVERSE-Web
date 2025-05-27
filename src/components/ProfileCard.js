@@ -21,6 +21,11 @@ export default function ProfileCard() {
 
     const fetchUser = async () => {
 
+        if(localStorage.getItem('token') === null){
+            setLoading(false)
+            return
+        }
+
         const response = await axios.get(`http://localhost:4000/api/getuserdetails`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`

@@ -15,6 +15,11 @@ export default function HomeScreen() {
 
   const fetchConfessions = async () => {
     try {
+      if (!localStorage.getItem('token')) {
+        toast.error('Please login to view confessions')
+        navigate('/login')
+        return
+      }
 
       setLoading(true)
 
