@@ -21,8 +21,8 @@ export default function AddConfessionForm() {
             toast.error('Confession cannot be empty')
             return
         }
-        if (imageUpload?.size > 5000000) {
-            toast.error('Image size should be less than 5MB')
+        if (imageUpload?.size > 10000000) {
+            toast.error('Image size should be less than 10MB')
             return
         }
         e.preventDefault()
@@ -100,7 +100,8 @@ export default function AddConfessionForm() {
 
                 <input type="file" className={`w-full p-4 border-2 ${mode ? "bg-black" : 'bg-white'} border-gray-300 rounded-lg`}
                     onChange={(e) => setImageUpload(e.target.files[0])}
-                    accept='image/png, image/jpeg, image/jpg, image/heic'
+                    accept="image/png, image/jpeg, image/jpg, image/heic, video/mp4, video/quicktime, video/x-matroska"
+
                     placeholder='Upload Image(Optional)'
                 /> 
 

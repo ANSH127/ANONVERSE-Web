@@ -59,13 +59,8 @@ const getConfessionById = async (req, res) => {
 const addConfession = async (req, res) => {
     let { name, description, comments, likes, likedby, reportedby } = req.body;
     let emptyfields = [];
-    if (!name) {
-        emptyfields.push("name");
-    }
-    if (!description) {
-        emptyfields.push("description");
-    }
-
+    if (!name) emptyfields.push("name");
+    if (!description) emptyfields.push("description");
     if (emptyfields.length > 0) {
         return res.status(400).json({ message: `please fill in the following fields: ${emptyfields.join(", ")}` });
     }
@@ -82,25 +77,30 @@ const addConfession = async (req, res) => {
     likedby = likedby ? JSON.parse(likedby) : [];
     reportedby = reportedby ? JSON.parse(reportedby) : [];
 
-    let imageUrl = '';
-    let imageId = '';
+    let fileUrl = '';
+    let fileId = '';
     if (req.file) {
         try {
+            let resourceType = 'image';
+            if (req.file.mimetype.startsWith('video/')) {
+                resourceType = 'video';
+            } else if (req.file.mimetype === 'application/pdf') {
+                resourceType = 'raw';
+            }
             const result = await cloudinary.uploader.upload(req.file.path, {
                 folder: 'confessions',
-                transformation: [
+                resource_type: resourceType,
+                transformation: resourceType === 'image' ? [
                     { width: 1000, crop: "scale" },
                     { quality: "auto" },
                     { fetch_format: "auto" }
-                ],
-
+                ] : undefined,
             });
-            imageUrl = result.secure_url;
-            imageId = result.public_id;
-            // Remove temp file
+            fileUrl = result.secure_url;
+            fileId = result.public_id;
             fs.unlinkSync(req.file.path);
         } catch (err) {
-            return res.status(500).json({ message: "Image upload failed" });
+            return res.status(500).json({ message: "File upload failed" });
         }
     }
 
@@ -111,8 +111,8 @@ const addConfession = async (req, res) => {
         likes,
         likedby,
         reportedby,
-        image: imageUrl,
-        imageId,
+        image: fileUrl,      // You may want to rename this to 'media' or 'file' for clarity
+        imageId: fileId,     // Same here
         createdAt: new Date(),
         uid: req.user._id
     });
@@ -139,7 +139,9 @@ const deleteConfession = async (req, res) => {
 
         // If the confession has an image, delete it from Cloudinary
         if (confession.imageId) {
-            await cloudinary.uploader.destroy(confession.imageId);
+            await cloudinary.uploader.destroy(confession.imageId, {
+            resource_type: confession.image && confession.image.match(/\.(mp4|mov|avi|webm)$/i) ? 'video' : 'image'
+            });
         }
 
 

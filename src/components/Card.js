@@ -128,13 +128,13 @@ export default function Card({ data, deleteConfession }) {
     }
   }
 
-  const handleReport =async () => {
+  const handleReport = async () => {
     let uid = JSON.parse(localStorage.getItem('user'))._id;
     let docid = data._id;
     try {
       if (data?.reportedby?.indexOf(uid) === -1) {
         if (window.confirm('Are you sure you want to report this post?')) {
-          
+
 
           const response = await axios.patch(`http://localhost:4000/api/reportconfession/${docid}`, {},
             {
@@ -144,7 +144,7 @@ export default function Card({ data, deleteConfession }) {
               }
             }
           )
-          
+
           if (response.status === 200) {
             toast.success('Post reported successfully')
             data.reportedby.push(uid);
@@ -248,30 +248,30 @@ export default function Card({ data, deleteConfession }) {
 
 
           {
-            data?.name!=="Anonymous"?
-            (data?.name?
-              <Link to={`/profile/${data?.uid?._id}`}>
-                <img
-                  src={`/images/Avatar/Avatar${data?.uid?.avatar + 1}.jpg`}
-                  alt='profile'
-                  className='rounded-full border-blue-500 shadow-lg hover:border-2'
-                  width='50'
-                  height='50'
+            data?.name !== "Anonymous" ?
+              (data?.name ?
+                <Link to={`/profile/${data?.uid?._id}`}>
+                  <img
+                    src={`/images/Avatar/Avatar${data?.uid?.avatar + 1}.jpg`}
+                    alt='profile'
+                    className='rounded-full border-blue-500 shadow-lg hover:border-2'
+                    width='50'
+                    height='50'
 
-                />
-              </Link>
+                  />
+                </Link>
+                :
+
+                <Skeleton width={50} height={50} borderRadius={1} count={1} duration={2} circle={true} />
+              )
               :
-              
-              <Skeleton width={50} height={50} borderRadius={1} count={1} duration={2} circle={true} />
-            )
-            :
-            <img
-              src={`/images/Avatar/Avatar${data?.uid?.avatar + 1}.jpg`}
-              alt='profile'
-              className='rounded-full border-blue-500 shadow-lg hover:border-2'
-              width='50'
-              height='50'
-            />
+              <img
+                src={`/images/Avatar/Avatar${data?.uid?.avatar + 1}.jpg`}
+                alt='profile'
+                className='rounded-full border-blue-500 shadow-lg hover:border-2'
+                width='50'
+                height='50'
+              />
 
 
           }
@@ -321,32 +321,36 @@ export default function Card({ data, deleteConfession }) {
 
       </div>
 
-      {/* // image */}
+      {/* // image /video */}
       {
         data?.image &&
         <div className='mt-2'>
-          <img
-            src={data.image}
-            alt=''
-            className={`w-full rounded-lg transition-all duration-500 ${imageLoaded ? '' : 'blur-md'}`}
-            onLoad={() => {
-              setImageLoaded(true);
-            }}
-            onError={() => setImageLoaded(false)}
-
-
-          />
-          {/* {
-            !imageLoaded &&
-            <div className='mt-2'>
-              <img
-                src='/images/blur-img.jpg'
-                alt='placeholder'
-                className='w-full rounded-lg transition-all duration-500'
-              />
-            </div>
-          } */}
-        </div>}
+          {
+            // Check for video
+            /\.(mp4|mov|webm|mkv)$/i.test(data.image)
+              ? (
+                <video
+                  src={data.image}
+                  controls
+                  className="w-full rounded-lg"
+                  style={{ maxHeight: 400 }}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              )
+              // Check for PDF
+              : (
+                <img
+                  src={data.image}
+                  alt=''
+                  className={`w-full rounded-lg transition-all duration-500 ${imageLoaded ? '' : 'blur-md'}`}
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => setImageLoaded(false)}
+                />
+              )
+          }
+        </div>
+      }
 
       {/* // description */}
       <div className='mt-2'>
