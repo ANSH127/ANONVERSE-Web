@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const cloudinary = require('../config/cloudinary');
 const fs = require('fs');
+const { redisClient} = require('../config/redisClient');
 
+
+const LIKE_QUEUE_SIZE = 1; // or your desired threshold
+const DISLIKE_QUEUE_SIZE = 1;
 
 
 // get confwssion
@@ -181,28 +185,72 @@ const getUserDetailsById = async (req, res) => {
 
 // update likes
 
+
+
 const updateLikes = async (req, res) => {
     const id = req.params.id;
+    const userId = req.user._id.toString();
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) throw new Error("Invalid confession id");
+
+        const likeKey = `confession:likes:${id}`;
+        const dislikeKey = `confession:dislikes:${id}`;
         const confession = await Confession.findById(id);
         if (!confession) throw new Error("Confession not found");
 
-        if (confession.likedby.includes(req.user._id)) {
-            // remove like
-            const updatedConfession = await Confession.findByIdAndUpdate(id, { likes: confession.likes - 1, $pull: { likedby: req.user._id } }, { new: true });
-            return res.status(200).json(updatedConfession);
+        const dbLiked = confession.likedby.includes(userId);
+        const likeQueued = await redisClient.sIsMember(likeKey, userId);
+        const dislikeQueued = await redisClient.sIsMember(dislikeKey, userId);
 
-        }
-        else {
+        if (dbLiked || likeQueued) {
+            // User wants to unlike
+            // Remove from like queue if present
+            await redisClient.sRem(likeKey, userId);
 
-            const updatedConfession = await Confession.findByIdAndUpdate(id, { likes: confession.likes + 1, $push: { likedby: req.user._id } }, { new: true });
-            res.status(200).json(updatedConfession);
+            // If user is in DB and not already queued for dislike, add to dislike queue
+            if (dbLiked && !dislikeQueued) {
+                await redisClient.sAdd(dislikeKey, userId);
+            }
+        } else {
+            // User wants to like
+            // Remove from dislike queue if present
+            await redisClient.sRem(dislikeKey, userId);
+
+            // Add to like queue if not already present
+            if (!likeQueued) {
+                await redisClient.sAdd(likeKey, userId);
+            }
         }
+
+        // Flush like queue if needed
+        const likeQueueSize = await redisClient.sCard(likeKey);
+        if (likeQueueSize >= LIKE_QUEUE_SIZE) {
+            const userIds = await redisClient.sMembers(likeKey);
+            await Confession.findByIdAndUpdate(id, {
+                $addToSet: { likedby: { $each: userIds } },
+                $inc: { likes: userIds.length }
+            });
+            await redisClient.del(likeKey);
+        }
+
+        // Flush dislike queue if needed
+        const dislikeQueueSize = await redisClient.sCard(dislikeKey);
+        if (dislikeQueueSize >= DISLIKE_QUEUE_SIZE) {
+            const userIds = await redisClient.sMembers(dislikeKey);
+            await Confession.findByIdAndUpdate(id, {
+                $pull: { likedby: { $in: userIds } },
+                $inc: { likes: -userIds.length }
+            });
+            await redisClient.del(dislikeKey);
+        }
+
+
+        res.status(200).json({"message":"like/dislike queued"});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 
 /// add comment

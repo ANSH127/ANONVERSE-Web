@@ -5,6 +5,9 @@ const userRoutes = require('./routes/user');
 const confessionRoutes = require('./routes/confession');
 const cors = require('cors');
 const app = express();
+const { connectRedis } = require('./config/redisClient');
+
+
 
 
 // middleware
@@ -29,16 +32,18 @@ app.use(cors(
 app.use('/api', userRoutes);
 app.use('/api', confessionRoutes);
 
-
-// connect to the database
-
-mongoose.connect(process.env.MONGO_URI).then(() => {
-    console.log("connected to the database");
-}).catch((error) => {
-    console.log("error ", error);
-});
-
-// listen to the server
-app.listen(process.env.PORT, () => {
-    console.log(`server is running on port ${process.env.PORT}`);
-});
+// async startup function
+(async () => {
+    try {
+        await connectRedis();
+        console.log('Connected to Redis');
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log("connected to the database");
+        app.listen(process.env.PORT, () => {
+            console.log(`server is running on port ${process.env.PORT}`);
+        });
+    } catch (error) {
+        console.error('Startup error:', error);
+        process.exit(1);
+    }
+})();

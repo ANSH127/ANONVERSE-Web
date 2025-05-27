@@ -32,8 +32,17 @@ export default function Card({ data, deleteConfession }) {
       })
       if (response.status === 200) {
         toast.success('Confession liked successfully')
-        data.likes = response.data.likes;
-        data.likedby = response.data.likedby;
+        const userId = JSON.parse(localStorage.getItem('user'))._id;
+        const index = data.likedby.indexOf(userId);
+        if (index !== -1) {
+          // If user already liked, remove their id (unlike)
+          data.likedby.splice(index, 1);
+        } else {
+          // If user hasn't liked, add their id (like)
+          data.likedby.push(userId);
+        }
+
+
       } else {
         toast.error('Error liking confession')
       }
